@@ -1,30 +1,31 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/auth/login/login.component';
-import { AuthRedirectComponent } from './features/auth/redirect/auth-redirect.component';
 import { authGuard } from './shared/core/guards/auth.guard';
-import { HomeComponent } from './features/home/home.component';
 
 export const routes: Routes = [
   // Rotas públicas
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'auth-redirect',
-    component: AuthRedirectComponent,
+    loadComponent: () =>
+      import('./features/auth/redirect/auth-redirect.component').then(
+        (m) => m.AuthRedirectComponent,
+      ),
   },
 
   // Rotas protegidas
   {
     path: 'dashboard',
     canActivate: [authGuard],
-    component: HomeComponent,
+    loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'home',
     canActivate: [authGuard],
-    component: HomeComponent,
+    loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'restaurant/:id',

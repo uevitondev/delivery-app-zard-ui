@@ -41,6 +41,8 @@
   --surface-strong: rgba(255, 248, 240, 0.92);
   --shadow-soft: 0 18px 40px rgba(108, 52, 17, 0.08);
   --shadow-card: 0 10px 30px rgba(118, 60, 24, 0.1);
+  --topbar-bg: rgba(255, 250, 245, 0.78);
+  --topbar-shadow: 0 10px 40px rgba(128, 64, 25, 0.06);
   --hero-gradient:
     radial-gradient(circle at top left, rgba(255, 173, 96, 0.4), transparent 28%),
     radial-gradient(circle at top right, rgba(255, 122, 89, 0.2), transparent 22%),
@@ -79,6 +81,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --surface: rgba(16, 18, 24, 0.78);
+  --surface-strong: rgba(20, 22, 28, 0.92);
+  --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.34);
+  --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.4);
+  --topbar-bg: rgba(17, 18, 24, 0.72);
+  --topbar-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+  --hero-gradient:
+    radial-gradient(circle at top left, rgba(255, 132, 74, 0.16), transparent 24%),
+    radial-gradient(circle at top right, rgba(255, 98, 71, 0.1), transparent 18%),
+    linear-gradient(180deg, #0f1116 0%, #12151c 46%, #171b23 100%);
 }
 
 
@@ -138,6 +150,11 @@
     min-height: 100vh;
   }
 
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 34%, transparent);
+    color: var(--foreground);
+  }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -171,9 +188,9 @@
   }
 
   .app-topbar {
-    @apply sticky top-0 z-40 border-b border-white/50 backdrop-blur-xl;
-    background: rgba(255, 250, 245, 0.78);
-    box-shadow: 0 10px 40px rgba(128, 64, 25, 0.06);
+    @apply sticky top-0 z-40 border-b border-white/50 backdrop-blur-xl dark:border-white/8;
+    background: var(--topbar-bg);
+    box-shadow: var(--topbar-shadow);
   }
 
   .app-topbar-inner {
@@ -187,11 +204,11 @@
   }
 
   .section-title {
-    @apply text-balance text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl;
+    @apply text-balance text-2xl font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl;
   }
 
   .section-copy {
-    @apply text-sm leading-6 text-stone-600 sm:text-base;
+    @apply text-sm leading-6 text-stone-600 dark:text-stone-300 sm:text-base;
   }
 
   .native-scroll {
@@ -200,6 +217,15 @@
 
   .native-scroll::-webkit-scrollbar {
     display: none;
+  }
+
+  .theme-toggle {
+    @apply fixed bottom-5 right-5 z-[1100] backdrop-blur-xl md:bottom-6 md:right-6;
+    box-shadow: 0 16px 38px rgba(118, 60, 24, 0.18);
+  }
+
+  .dark .theme-toggle {
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
   }
 }
 

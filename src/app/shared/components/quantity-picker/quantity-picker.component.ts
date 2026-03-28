@@ -9,29 +9,29 @@ import { ButtonComponent } from '../button/button.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full">
-      <label class="block text-sm font-semibold text-gray-900 mb-3">Quantidade</label>
+      <label class="mb-3 block text-sm font-semibold text-stone-900 dark:text-stone-100">Quantidade</label>
 
       <div class="flex items-center gap-4 mb-4">
-        <app-button
-          variant="secondary"
-          size="md"
+        <button z-button
+          zType="secondary"
+          zSize="md"
           [disabled]="quantity() <= 1"
           (click)="decreaseQuantity()"
         >
           −
-        </app-button>
+        </button>
 
-        <div class="text-center flex-1">
-          <span class="text-2xl font-bold text-gray-900">{{ quantity() }}</span>
+        <div class="flex-1 text-center">
+          <span class="text-2xl font-bold text-stone-900 dark:text-stone-100">{{ quantity() }}</span>
         </div>
 
-        <app-button variant="secondary" size="md" (click)="increaseQuantity()"> + </app-button>
+        <button z-button zType="secondary" zSize="md" (click)="increaseQuantity()"> + </button>
       </div>
 
       <!-- Total price -->
-      <div class="bg-gray-50 rounded-lg p-3 text-center mb-4">
-        <p class="text-sm text-gray-600 mb-1">Total</p>
-        <p class="text-2xl font-bold text-gray-900">
+      <div class="mb-4 rounded-[22px] bg-stone-50 p-3 text-center dark:bg-white/6">
+        <p class="mb-1 text-sm text-stone-600 dark:text-stone-300">Total</p>
+        <p class="text-2xl font-bold text-stone-900 dark:text-stone-100">
           R$ {{ basePrice() * quantity() | number: '1.2-2' }}
         </p>
       </div>

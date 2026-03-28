@@ -19,26 +19,26 @@ import { ToastService } from '@/shared/core/services/toast.service';
           <div class="flex items-center gap-3">
             <button
               (click)="goBack()"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               ←
             </button>
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">vantagens</p>
-              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Ofertas</h1>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">vantagens</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Ofertas</h1>
             </div>
           </div>
-          <app-badge variant="info" size="md">{{ offers().length }} ativas</app-badge>
+          <z-badge zType="info" zSize="md">{{ offers().length }} ativas</z-badge>
         </div>
       </header>
 
       <main class="app-page py-6">
         <div class="mb-6 max-w-3xl">
           <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">promocoes do app</p>
-          <h2 class="mt-2 text-3xl font-semibold tracking-tight text-stone-950">
+          <h2 class="mt-2 text-3xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
             Cupons e ofertas pensados para o seu perfil
           </h2>
-          <p class="mt-3 text-sm leading-6 text-stone-600">
+          <p class="mt-3 text-sm leading-6 text-stone-600 dark:text-stone-300">
             Salve os cupons na carteira e use depois no checkout. As recomendacoes usam favoritos,
             buscas recentes e sua cozinha preferida.
           </p>
@@ -46,43 +46,43 @@ import { ToastService } from '@/shared/core/services/toast.service';
 
         <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
           @for (offer of offers(); track offer.code) {
-            <app-card>
+            <z-card>
               <div class="flex items-start justify-between gap-4">
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">
                     {{ offer.label }}
                   </p>
-                  <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">{{ offer.title }}</h3>
-                  <p class="mt-2 text-sm leading-6 text-stone-600">{{ offer.description }}</p>
+                  <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">{{ offer.title }}</h3>
+                  <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">{{ offer.description }}</p>
                   @if (offer.restaurantName) {
-                    <p class="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+                    <p class="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">
                       valido para {{ offer.restaurantName }}
                     </p>
                   }
                 </div>
-                <app-badge
-                  [variant]="profileService.isCouponSaved(offer.code) ? 'success' : 'warning'"
-                  size="sm"
+                <z-badge
+                  [zType]="profileService.isCouponSaved(offer.code) ? 'success' : 'warning'"
+                  zSize="sm"
                 >
                   {{ profileService.isCouponSaved(offer.code) ? 'salvo' : 'novo' }}
-                </app-badge>
+                </z-badge>
               </div>
 
               <div class="mt-5 flex flex-wrap gap-3">
-                <app-button
-                  size="sm"
-                  [variant]="profileService.isCouponSaved(offer.code) ? 'secondary' : 'primary'"
+                <button z-button
+                  zSize="sm"
+                  [zType]="profileService.isCouponSaved(offer.code) ? 'secondary' : 'default'"
                   (click)="toggleOffer(offer.code)"
                 >
                   {{ profileService.isCouponSaved(offer.code) ? 'Remover da carteira' : 'Salvar na carteira' }}
-                </app-button>
+                </button>
                 @if (offer.restaurantId) {
-                  <app-button variant="ghost" size="sm" (click)="openRestaurant(offer.restaurantId)">
+                  <button z-button zType="ghost" zSize="sm" (click)="openRestaurant(offer.restaurantId)">
                     Ver restaurante
-                  </app-button>
+                  </button>
                 }
               </div>
-            </app-card>
+            </z-card>
           }
         </div>
       </main>

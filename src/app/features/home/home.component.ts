@@ -57,7 +57,7 @@ import { HomeFacade } from './home.facade';
               <p class="text-xs font-semibold uppercase tracking-[0.24em] text-orange-500">
                 Delivery Native Web
               </p>
-              <h1 class="truncate text-xl font-semibold tracking-tight text-stone-950 sm:text-2xl">
+              <h1 class="truncate text-xl font-semibold tracking-tight text-stone-950 dark:text-stone-100 sm:text-2xl">
                 Descubra restaurantes perto de voce
               </h1>
             </div>
@@ -66,29 +66,29 @@ import { HomeFacade } from './home.facade';
           <div class="hidden items-center gap-3 md:flex">
             <button
               (click)="goToNotifications()"
-              class="relative inline-flex h-12 items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 hover:text-stone-950"
+              class="relative inline-flex h-12 items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 hover:text-stone-950 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:hover:text-white dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               <span>Alertas</span>
               @if (notificationService.unreadCount() > 0) {
-                <app-badge variant="warning" size="sm">
+                <z-badge zType="warning" zSize="sm">
                   {{ notificationService.unreadCount() }}
-                </app-badge>
+                </z-badge>
               }
             </button>
 
             <button
               (click)="goToCart()"
-              class="relative inline-flex h-12 items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 hover:text-stone-950"
+              class="relative inline-flex h-12 items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 hover:text-stone-950 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:hover:text-white dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               <span>Carrinho</span>
               @if (cartService.itemCount() > 0) {
-                <app-badge variant="danger" size="sm">{{ cartService.itemCount() }}</app-badge>
+                <z-badge zType="destructive" zSize="sm">{{ cartService.itemCount() }}</z-badge>
               }
             </button>
 
             <button
               (click)="goToProfile()"
-              class="inline-flex h-12 items-center rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 hover:text-stone-950"
+              class="inline-flex h-12 items-center rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 hover:text-stone-950 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:hover:text-white dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               Perfil
             </button>
@@ -99,20 +99,20 @@ import { HomeFacade } from './home.facade';
       <main class="app-page py-6 sm:py-8">
         @if (!profileService.hasCompletedOnboarding()) {
           <section class="mb-4">
-            <app-card>
+            <z-card>
               <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">falta um passo</p>
-                  <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                     Personalize sua experiencia de descoberta
                   </h2>
-                  <p class="mt-2 text-sm leading-6 text-stone-600">
+                  <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
                     Finalize seu onboarding rapido no perfil para salvar sua cozinha favorita.
                   </p>
                 </div>
-                <app-button size="lg" (click)="goToProfile()">Completar onboarding</app-button>
+                <button z-button zSize="lg" (click)="goToProfile()">Completar onboarding</button>
               </div>
-            </app-card>
+            </z-card>
           </section>
         }
 
@@ -120,7 +120,7 @@ import { HomeFacade } from './home.facade';
           <div class="app-surface overflow-hidden p-5 sm:p-7">
             <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
               <div>
-                <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
+                <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-700 dark:bg-orange-500/12 dark:text-orange-300">
                   entrega rapida, experiencia premium
                 </p>
                 <h2 class="section-title max-w-xl">
@@ -131,50 +131,50 @@ import { HomeFacade } from './home.facade';
                   sem depender de backend por enquanto.
                 </p>
                 @if (profileService.preferredCuisine(); as cuisine) {
-                  <p class="mt-4 inline-flex rounded-full bg-stone-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+                  <p class="mt-4 inline-flex rounded-full bg-stone-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white dark:bg-white/10 dark:text-stone-100">
                     recomendacao baseada em {{ cuisine }}
                   </p>
                 }
 
                 <div class="mt-6 flex flex-wrap gap-3">
-                  <app-button size="lg" (click)="scrollToRestaurants()">Explorar restaurantes</app-button>
-                  <app-button variant="secondary" size="lg" (click)="goToOrders()">
+                  <button z-button zSize="lg" (click)="scrollToRestaurants()">Explorar restaurantes</button>
+                  <button z-button zType="secondary" zSize="lg" (click)="goToOrders()">
                     Ver meus pedidos
-                  </app-button>
-                  <app-button variant="ghost" size="lg" (click)="goToFavoriteItems()">
+                  </button>
+                  <button z-button zType="ghost" zSize="lg" (click)="goToFavoriteItems()">
                     Pratos favoritos
-                  </app-button>
-                  <app-button variant="ghost" size="lg" (click)="goToCollections()">
+                  </button>
+                  <button z-button zType="ghost" zSize="lg" (click)="goToCollections()">
                     Colecoes
-                  </app-button>
+                  </button>
                 </div>
               </div>
 
               <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                <app-card>
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Aberto agora</p>
-                  <p class="mt-2 text-3xl font-semibold text-stone-950">{{ restaurants().length }}</p>
-                  <p class="mt-2 text-sm text-stone-600">restaurantes ativos na vitrine</p>
-                </app-card>
-                <app-card>
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Favoritos</p>
-                  <p class="mt-2 text-3xl font-semibold text-stone-950">{{ profileService.favoriteRestaurantIds().length }}</p>
-                  <p class="mt-2 text-sm text-stone-600">lugares salvos para pedir rapido</p>
-                </app-card>
+                <z-card>
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">Aberto agora</p>
+                  <p class="mt-2 text-3xl font-semibold text-stone-950 dark:text-stone-100">{{ restaurants().length }}</p>
+                  <p class="mt-2 text-sm text-stone-600 dark:text-stone-300">restaurantes ativos na vitrine</p>
+                </z-card>
+                <z-card>
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">Favoritos</p>
+                  <p class="mt-2 text-3xl font-semibold text-stone-950 dark:text-stone-100">{{ profileService.favoriteRestaurantIds().length }}</p>
+                  <p class="mt-2 text-sm text-stone-600 dark:text-stone-300">lugares salvos para pedir rapido</p>
+                </z-card>
               </div>
             </div>
           </div>
 
-          <app-card>
+          <z-card>
             <div class="mb-4 flex items-center justify-between">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Busca inteligente</p>
-                <h3 class="mt-1 text-lg font-semibold tracking-tight text-stone-950">Encontre seu proximo pedido</h3>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">Busca inteligente</p>
+                <h3 class="mt-1 text-lg font-semibold tracking-tight text-stone-950 dark:text-stone-100">Encontre seu proximo pedido</h3>
               </div>
-              <app-badge variant="info" size="md">ao vivo</app-badge>
+              <z-badge zType="info" zSize="md">ao vivo</z-badge>
             </div>
 
-            <label class="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+            <label class="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">
               Restaurante, cozinha ou prato
             </label>
             <input
@@ -183,27 +183,27 @@ import { HomeFacade } from './home.facade';
               [(ngModel)]="searchValue"
               (input)="onSearchChange($event)"
               (keyup.enter)="commitSearch(searchValue)"
-              class="w-full rounded-[24px] border border-stone-200 bg-white/90 px-4 py-3 text-sm text-stone-900 outline-none ring-0 transition focus:border-orange-300 focus:ring-4 focus:ring-orange-100"
+              class="w-full rounded-[24px] border border-stone-200 bg-white/90 px-4 py-3 text-sm text-stone-900 outline-none ring-0 transition focus:border-orange-300 focus:ring-4 focus:ring-orange-100 dark:border-white/10 dark:bg-white/6 dark:text-stone-100 dark:placeholder:text-stone-500 dark:focus:border-orange-400 dark:focus:ring-orange-500/20"
             />
 
             @if (searchSuggestions().length > 0) {
               <div class="mt-4">
-                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Sugestoes</p>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">Sugestoes</p>
                 <div class="flex flex-wrap gap-2">
                   @for (suggestion of searchSuggestions(); track suggestion) {
-                    <app-button size="sm" variant="secondary" (click)="applySuggestion(suggestion)">
+                    <button z-button zSize="sm" zType="secondary" (click)="applySuggestion(suggestion)">
                       {{ suggestion }}
-                    </app-button>
+                    </button>
                   }
                 </div>
               </div>
             } @else if (profileService.recentSearches().length > 0) {
               <div class="mt-4">
                 <div class="mb-2 flex items-center justify-between gap-3">
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Buscas recentes</p>
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">Buscas recentes</p>
                   <button
                     type="button"
-                    class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 transition hover:text-stone-700"
+                    class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 transition hover:text-stone-700 dark:text-stone-500 dark:hover:text-stone-200"
                     (click)="clearRecentSearches()"
                   >
                     limpar
@@ -211,63 +211,63 @@ import { HomeFacade } from './home.facade';
                 </div>
                 <div class="flex flex-wrap gap-2">
                   @for (search of profileService.recentSearches(); track search) {
-                    <app-button size="sm" variant="secondary" (click)="applySuggestion(search)">
+                    <button z-button zSize="sm" zType="secondary" (click)="applySuggestion(search)">
                       {{ search }}
-                    </app-button>
+                    </button>
                   }
                 </div>
               </div>
             }
 
             <div class="native-scroll mt-4 flex gap-2 pb-1">
-              <app-button variant="ghost" size="sm" (click)="clearFilters()">Tudo</app-button>
-              <app-button
-                size="sm"
-                [variant]="showOnlyFavorites() ? 'primary' : 'secondary'"
+              <button z-button zType="ghost" zSize="sm" (click)="clearFilters()">Tudo</button>
+              <button z-button
+                zSize="sm"
+                [zType]="showOnlyFavorites() ? 'default' : 'secondary'"
                 (click)="toggleFavoritesFilter()"
               >
                 Favoritos
-              </app-button>
+              </button>
               @for (category of categories(); track category) {
-                <app-button
+                <button z-button
                   (click)="filterByCategory(category)"
-                  [variant]="selectedCategory() === category ? 'primary' : 'secondary'"
-                  size="sm"
+                  [zType]="selectedCategory() === category ? 'default' : 'secondary'"
+                  zSize="sm"
                 >
                   {{ category }}
-                </app-button>
+                </button>
               }
             </div>
-          </app-card>
+          </z-card>
         </section>
 
         <section class="mb-8 grid gap-4 md:grid-cols-2">
           <div class="md:col-span-2 flex items-end justify-between gap-4">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">carteira promocional</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">carteira promocional</p>
               <h2 class="section-title">Ofertas em destaque</h2>
             </div>
-            <app-button variant="ghost" size="sm" (click)="goToOffers()">Ver todas</app-button>
+            <button z-button zType="ghost" zSize="sm" (click)="goToOffers()">Ver todas</button>
           </div>
           @for (coupon of featuredCoupons(); track coupon.code) {
-            <app-card>
+            <z-card>
               <div class="flex items-start justify-between gap-4">
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">
                     Cupom {{ coupon.code }}
                   </p>
-                  <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950">{{ coupon.title }}</h3>
-                  <p class="mt-2 text-sm leading-6 text-stone-600">{{ coupon.description }}</p>
+                  <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">{{ coupon.title }}</h3>
+                  <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">{{ coupon.description }}</p>
                 </div>
-                <app-button
-                  size="sm"
-                  [variant]="profileService.isCouponSaved(coupon.code) ? 'secondary' : 'primary'"
+                <button z-button
+                  zSize="sm"
+                  [zType]="profileService.isCouponSaved(coupon.code) ? 'secondary' : 'default'"
                   (click)="toggleSavedCoupon(coupon.code)"
                 >
                   {{ profileService.isCouponSaved(coupon.code) ? 'Salvo' : 'Salvar' }}
-                </app-button>
+                </button>
               </div>
-            </app-card>
+            </z-card>
           }
         </section>
 
@@ -275,30 +275,30 @@ import { HomeFacade } from './home.facade';
           <section class="mb-8">
             <div class="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">ofertas inteligentes</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">ofertas inteligentes</p>
                 <h2 class="section-title">Promocoes para o seu momento</h2>
               </div>
-              <p class="hidden text-sm text-stone-500 sm:block">baseado nos seus favoritos e buscas</p>
+              <p class="hidden text-sm text-stone-500 dark:text-stone-400 sm:block">baseado nos seus favoritos e buscas</p>
             </div>
 
             <div class="grid gap-4 md:grid-cols-3">
               @for (offer of personalizedOffers(); track offer.code) {
-                <app-card>
+                <z-card>
                   <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">
                     {{ offer.label }}
                   </p>
-                  <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950">{{ offer.title }}</h3>
-                  <p class="mt-2 text-sm leading-6 text-stone-600">{{ offer.description }}</p>
+                  <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">{{ offer.title }}</h3>
+                  <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">{{ offer.description }}</p>
                   <div class="mt-4">
-                    <app-button
-                      size="sm"
-                      [variant]="profileService.isCouponSaved(offer.code) ? 'secondary' : 'primary'"
+                    <button z-button
+                      zSize="sm"
+                      [zType]="profileService.isCouponSaved(offer.code) ? 'secondary' : 'default'"
                       (click)="toggleSavedCoupon(offer.code)"
                     >
                       {{ profileService.isCouponSaved(offer.code) ? 'Salvo na carteira' : 'Salvar oferta' }}
-                    </app-button>
+                    </button>
                   </div>
-                </app-card>
+                </z-card>
               }
             </div>
           </section>
@@ -308,10 +308,10 @@ import { HomeFacade } from './home.facade';
           <section class="mb-8">
             <div class="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">continue explorando</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">continue explorando</p>
                 <h2 class="section-title">Retome de onde voce parou</h2>
               </div>
-              <p class="hidden text-sm text-stone-500 sm:block">baseado nas suas ultimas buscas</p>
+              <p class="hidden text-sm text-stone-500 dark:text-stone-400 sm:block">baseado nas suas ultimas buscas</p>
             </div>
 
             <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -331,10 +331,10 @@ import { HomeFacade } from './home.facade';
           <section class="mb-8">
             <div class="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">para voce</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">para voce</p>
                 <h2 class="section-title">Selecao personalizada</h2>
               </div>
-              <p class="hidden text-sm text-stone-500 sm:block">
+              <p class="hidden text-sm text-stone-500 dark:text-stone-400 sm:block">
                 baseada em {{ profileService.preferredCuisine() || 'suas preferencias' }}
               </p>
             </div>
@@ -356,15 +356,15 @@ import { HomeFacade } from './home.facade';
           <section class="mb-8">
             <div class="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">colecoes tematicas</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">colecoes tematicas</p>
                 <h2 class="section-title">Pedidos prontos para o momento</h2>
               </div>
-              <app-button variant="ghost" size="sm" (click)="goToCollections()">Ver todas</app-button>
+              <button z-button zType="ghost" zSize="sm" (click)="goToCollections()">Ver todas</button>
             </div>
 
             <div class="grid gap-4 xl:grid-cols-3">
               @for (collection of thematicCollections(); track collection.id) {
-                <app-card>
+                <z-card>
                   <div class="rounded-[24px] bg-gradient-to-br p-5 text-white" [ngClass]="collection.accent">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white/80">colecao</p>
                     <h3 class="mt-2 text-2xl font-semibold tracking-tight">{{ collection.title }}</h3>
@@ -374,19 +374,19 @@ import { HomeFacade } from './home.facade';
 
                   <div class="mt-4 flex flex-wrap gap-2">
                     @for (item of collection.items; track item.id) {
-                      <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
+                      <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600 dark:bg-white/8 dark:text-stone-300">
                         {{ item.name }}
                       </span>
                     }
                   </div>
 
                   <div class="mt-5 flex items-center justify-between gap-4">
-                    <p class="text-lg font-semibold text-stone-950">R$ {{ collection.total | number: '1.2-2' }}</p>
-                    <app-button size="sm" (click)="loadCollection(collection.id)">
+                    <p class="text-lg font-semibold text-stone-950 dark:text-stone-100">R$ {{ collection.total | number: '1.2-2' }}</p>
+                    <button z-button zSize="sm" (click)="loadCollection(collection.id)">
                       Montar pedido
-                    </app-button>
+                    </button>
                   </div>
-                </app-card>
+                </z-card>
               }
             </div>
           </section>
@@ -396,10 +396,10 @@ import { HomeFacade } from './home.facade';
           <section class="mb-8">
             <div class="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">pratos em alta</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">pratos em alta</p>
                 <h2 class="section-title">Recomendados para voce</h2>
               </div>
-              <app-button variant="ghost" size="sm" (click)="goToFavoriteItems()">Ver todos os pratos salvos</app-button>
+              <button z-button zType="ghost" zSize="sm" (click)="goToFavoriteItems()">Ver todos os pratos salvos</button>
             </div>
 
             <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -419,37 +419,37 @@ import { HomeFacade } from './home.facade';
           <section class="mb-8">
             <div class="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">pedido em um clique</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">pedido em um clique</p>
                 <h2 class="section-title">Combos dos seus favoritos</h2>
               </div>
             </div>
 
             <div class="grid gap-4 lg:grid-cols-2">
               @for (bundle of favoriteBundles(); track bundle.restaurant.id) {
-                <app-card>
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+                <z-card>
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">
                     {{ bundle.restaurant.category }}
                   </p>
-                  <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                  <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                     Combo {{ bundle.restaurant.name }}
                   </h3>
-                  <p class="mt-2 text-sm leading-6 text-stone-600">
+                  <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
                     {{ bundle.items.length }} itens salvos para repetir rapido.
                   </p>
                   <div class="mt-4 flex flex-wrap gap-2">
                     @for (item of bundle.items; track item.id) {
-                      <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
+                      <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600 dark:bg-white/8 dark:text-stone-300">
                         {{ item.name }}
                       </span>
                     }
                   </div>
                   <div class="mt-5 flex items-center justify-between gap-4">
-                    <p class="text-lg font-semibold text-stone-950">R$ {{ bundle.total | number: '1.2-2' }}</p>
-                    <app-button size="sm" (click)="loadFavoriteBundle(bundle.restaurant.id)">
+                    <p class="text-lg font-semibold text-stone-950 dark:text-stone-100">R$ {{ bundle.total | number: '1.2-2' }}</p>
+                    <button z-button zSize="sm" (click)="loadFavoriteBundle(bundle.restaurant.id)">
                       Montar combo
-                    </app-button>
+                    </button>
                   </div>
-                </app-card>
+                </z-card>
               }
             </div>
           </section>
@@ -458,21 +458,21 @@ import { HomeFacade } from './home.facade';
         <section id="restaurants-section" class="pb-8">
           <div class="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">lista curada</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">lista curada</p>
               <h2 class="section-title">Restaurantes em destaque</h2>
             </div>
-            <p class="hidden text-sm text-stone-500 sm:block">{{ filteredRestaurants().length }} opcoes encontradas</p>
+            <p class="hidden text-sm text-stone-500 dark:text-stone-400 sm:block">{{ filteredRestaurants().length }} opcoes encontradas</p>
           </div>
 
           @if (loading()) {
             <app-loading variant="cards" [count]="6" />
           } @else if (filteredRestaurants().length === 0) {
-            <app-card>
+            <z-card>
               <div class="py-10 text-center">
-                <p class="text-lg font-semibold text-stone-900">Nenhum restaurante encontrado</p>
-                <p class="mt-2 text-sm text-stone-600">Ajuste a busca ou escolha outra categoria.</p>
+                <p class="text-lg font-semibold text-stone-900 dark:text-stone-100">Nenhum restaurante encontrado</p>
+                <p class="mt-2 text-sm text-stone-600 dark:text-stone-300">Ajuste a busca ou escolha outra categoria.</p>
               </div>
-            </app-card>
+            </z-card>
           } @else {
             <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
               @for (restaurant of filteredRestaurants(); track restaurant.id) {
@@ -488,13 +488,13 @@ import { HomeFacade } from './home.facade';
         </section>
       </main>
 
-      <nav class="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between rounded-full border border-white/70 bg-white/88 px-4 py-3 shadow-[0_18px_34px_rgba(118,60,24,0.18)] backdrop-blur-xl md:hidden">
+      <nav class="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between rounded-full border border-white/70 bg-white/88 px-4 py-3 shadow-[0_18px_34px_rgba(118,60,24,0.18)] backdrop-blur-xl dark:border-white/10 dark:bg-[rgba(17,18,24,0.84)] dark:shadow-[0_18px_36px_rgba(0,0,0,0.34)] md:hidden">
         <button class="flex flex-col items-center gap-1 text-xs font-semibold text-orange-600">
           <span class="h-2 w-2 rounded-full bg-orange-500"></span>
           Inicio
         </button>
-        <button (click)="goToOrders()" class="text-xs font-semibold text-stone-500">Pedidos</button>
-        <button (click)="goToNotifications()" class="relative text-xs font-semibold text-stone-500">
+        <button (click)="goToOrders()" class="text-xs font-semibold text-stone-500 dark:text-stone-400">Pedidos</button>
+        <button (click)="goToNotifications()" class="relative text-xs font-semibold text-stone-500 dark:text-stone-400">
           Alertas
           @if (notificationService.unreadCount() > 0) {
             <span class="absolute -right-4 -top-2 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] text-white">
@@ -502,7 +502,7 @@ import { HomeFacade } from './home.facade';
             </span>
           }
         </button>
-        <button (click)="goToCart()" class="relative text-xs font-semibold text-stone-500">
+        <button (click)="goToCart()" class="relative text-xs font-semibold text-stone-500 dark:text-stone-400">
           Carrinho
           @if (cartService.itemCount() > 0) {
             <span class="absolute -right-4 -top-2 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
@@ -510,7 +510,7 @@ import { HomeFacade } from './home.facade';
             </span>
           }
         </button>
-        <button (click)="goToProfile()" class="text-xs font-semibold text-stone-500">Perfil</button>
+        <button (click)="goToProfile()" class="text-xs font-semibold text-stone-500 dark:text-stone-400">Perfil</button>
       </nav>
     </div>
   `,

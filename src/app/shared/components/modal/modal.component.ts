@@ -3,25 +3,25 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
-  selector: 'app-modal',
+  selector: 'z-dialog',
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm"
         (click)="onBackdropClick()"
       >
         <div
-          class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
+          class="mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-[28px] border border-white/65 bg-[rgba(255,255,255,0.92)] shadow-xl dark:border-white/10 dark:bg-[rgba(20,20,23,0.94)]"
           (click)="$event.stopPropagation()"
         >
           <!-- Header -->
           @if (title()) {
-            <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 class="text-lg font-semibold text-gray-900">{{ title() }}</h2>
-              <button (click)="close()" class="text-gray-500 hover:text-gray-700 transition-colors">
+            <div class="flex items-center justify-between border-b border-stone-200 px-6 py-4 dark:border-white/8">
+              <h2 class="text-lg font-semibold text-stone-900 dark:text-stone-100">{{ title() }}</h2>
+              <button (click)="close()" class="text-stone-500 transition-colors hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-100">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -35,19 +35,19 @@ import { ButtonComponent } from '../button/button.component';
           }
 
           <!-- Content -->
-          <div class="px-6 py-4">
+          <div class="px-6 py-4 text-stone-700 dark:text-stone-200">
             <ng-content></ng-content>
           </div>
 
           <!-- Footer -->
           @if (showFooter()) {
-            <div class="border-t border-gray-200 px-6 py-4 flex gap-3 justify-end">
-              <app-button variant="secondary" (click)="close()">
+            <div class="flex justify-end gap-3 border-t border-stone-200 px-6 py-4 dark:border-white/8">
+              <button z-button zType="secondary" (click)="close()">
                 {{ cancelLabel() }}
-              </app-button>
-              <app-button variant="primary" (click)="onConfirm()">
+              </button>
+              <button z-button zType="default" (click)="onConfirm()">
                 {{ confirmLabel() }}
-              </app-button>
+              </button>
             </div>
           }
         </div>

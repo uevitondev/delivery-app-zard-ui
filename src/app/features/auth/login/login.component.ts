@@ -11,7 +11,7 @@ import { CardComponent, ButtonComponent } from '@/shared/components';
   template: `
     <div class="app-shell flex items-center justify-center px-4 py-8">
       <div class="w-full max-w-md">
-        <app-card>
+        <z-card>
           <div class="text-center">
             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-[22px] bg-[linear-gradient(135deg,#ff8a55_0%,#ff5a36_100%)] text-2xl font-bold text-white shadow-[0_18px_34px_rgba(255,107,53,0.24)]">
               Z
@@ -22,15 +22,15 @@ import { CardComponent, ButtonComponent } from '@/shared/components';
               Uma interface moderna de delivery, pronta para web desktop e mobile.
             </p>
 
-            <app-button class="mt-8" variant="primary" size="lg" [fullWidth]="true" (click)="login()">
+            <button z-button class="mt-8" zType="default" zSize="lg" [zFull]="true" (click)="login()">
               Login com Keycloak
-            </app-button>
+            </button>
 
             <div class="mt-5">
               <p class="text-sm text-stone-500">Voce sera redirecionado para o provedor de identidade.</p>
             </div>
           </div>
-        </app-card>
+        </z-card>
       </div>
     </div>
   `,

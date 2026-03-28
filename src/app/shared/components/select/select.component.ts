@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -8,7 +8,7 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'app-select',
+  selector: 'z-select',
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +25,7 @@ export interface SelectOption {
   template: `
     <div class="w-full">
       @if (label()) {
-        <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800">
+        <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">
           {{ label() }}
         </label>
       }
@@ -36,7 +36,7 @@ export interface SelectOption {
         [value]="value"
         (change)="onSelectionChange($event)"
         (blur)="onBlur()"
-        class="w-full rounded-[22px] border border-stone-200 bg-white/88 px-4 py-3 text-sm text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-100 disabled:bg-stone-100 disabled:text-stone-400"
+        class="w-full rounded-[22px] border border-stone-200 bg-white/88 px-4 py-3 text-sm text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-100 disabled:bg-stone-100 disabled:text-stone-400 dark:border-white/10 dark:bg-white/6 dark:text-stone-100 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] dark:focus:border-orange-400 dark:focus:ring-orange-500/20 dark:disabled:bg-white/4 dark:disabled:text-stone-500"
       >
         @if (placeholder()) {
           <option value="">{{ placeholder() }}</option>
@@ -48,7 +48,7 @@ export interface SelectOption {
       </select>
 
       @if (error()) {
-        <p class="mt-2 text-sm text-red-600">{{ error() }}</p>
+        <p class="mt-2 text-sm text-red-600 dark:text-red-300">{{ error() }}</p>
       }
     </div>
   `,

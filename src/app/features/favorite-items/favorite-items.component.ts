@@ -20,13 +20,13 @@ import { MenuItem } from '@/shared/models';
           <div class="flex items-center gap-3">
             <button
               (click)="goBack()"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               ←
             </button>
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">colecao pessoal</p>
-              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Pratos favoritos</h1>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">colecao pessoal</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Pratos favoritos</h1>
             </div>
           </div>
         </div>
@@ -34,25 +34,25 @@ import { MenuItem } from '@/shared/models';
 
       <main class="app-page py-6">
         @if (profileService.favoriteMenuItems().length === 0) {
-          <app-card>
+          <z-card>
             <div class="py-14 text-center">
-              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-stone-400">sem itens salvos</p>
-              <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950">Monte sua lista de pratos preferidos</h2>
-              <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-600">
+              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">sem itens salvos</p>
+              <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Monte sua lista de pratos preferidos</h2>
+              <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-600 dark:text-stone-300">
                 Salve pratos no cardapio dos restaurantes para repetir pedidos com muito mais rapidez.
               </p>
               <div class="mt-6 flex justify-center">
-                <app-button size="lg" (click)="goHome()">Explorar restaurantes</app-button>
+                <button z-button zSize="lg" (click)="goHome()">Explorar restaurantes</button>
               </div>
             </div>
-          </app-card>
+          </z-card>
         } @else {
           <div class="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">atalho rapido</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">atalho rapido</p>
               <h2 class="section-title">Seus itens salvos</h2>
             </div>
-            <p class="hidden text-sm text-stone-500 sm:block">
+            <p class="hidden text-sm text-stone-500 dark:text-stone-400 sm:block">
               {{ profileService.favoriteMenuItems().length }} pratos prontos para repetir
             </p>
           </div>
@@ -69,20 +69,20 @@ import { MenuItem } from '@/shared/models';
           </div>
 
           <div class="mt-6">
-            <app-card>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">dica</p>
-              <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950">Quer ver mais detalhes?</h3>
-              <p class="mt-2 text-sm leading-6 text-stone-600">
+            <z-card>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">dica</p>
+              <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Quer ver mais detalhes?</h3>
+              <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
                 Abra o restaurante de origem para personalizar observacoes e explorar itens relacionados.
               </p>
               <div class="mt-4 flex flex-wrap gap-3">
                 @for (item of profileService.favoriteMenuItems().slice(0, 3); track item.id) {
-                  <app-button variant="secondary" size="sm" (click)="goToRestaurant(item.restaurantId)">
+                  <button z-button zType="secondary" zSize="sm" (click)="goToRestaurant(item.restaurantId)">
                     {{ getRestaurantName(item.restaurantId) }}
-                  </app-button>
+                  </button>
                 }
               </div>
-            </app-card>
+            </z-card>
           </div>
         }
       </main>

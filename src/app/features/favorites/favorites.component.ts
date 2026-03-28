@@ -32,7 +32,7 @@ import { ToastService } from '@/shared/core/services/toast.service';
               <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Favoritos</h1>
             </div>
           </div>
-          <app-badge variant="info" size="md">{{ profileService.favoriteRestaurants().length }} salvos</app-badge>
+          <z-badge zType="info" zSize="md">{{ profileService.favoriteRestaurants().length }} salvos</z-badge>
         </div>
       </header>
 
@@ -40,7 +40,7 @@ import { ToastService } from '@/shared/core/services/toast.service';
         @if (loading()) {
           <app-loading variant="cards" [count]="3" />
         } @else if (profileService.favoriteRestaurants().length === 0) {
-          <app-card>
+          <z-card>
             <div class="py-14 text-center">
               <p class="text-sm font-semibold uppercase tracking-[0.18em] text-stone-400">nenhum favorito</p>
               <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950">Monte sua lista de queridinhos</h2>
@@ -48,10 +48,10 @@ import { ToastService } from '@/shared/core/services/toast.service';
                 Salve restaurantes para reencontrar seus pedidos favoritos em segundos.
               </p>
               <div class="mt-6 flex justify-center">
-                <app-button size="lg" (click)="goHome()">Explorar restaurantes</app-button>
+                <button z-button zSize="lg" (click)="goHome()">Explorar restaurantes</button>
               </div>
             </div>
-          </app-card>
+          </z-card>
         } @else {
           <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             @for (restaurant of profileService.favoriteRestaurants(); track restaurant.id) {

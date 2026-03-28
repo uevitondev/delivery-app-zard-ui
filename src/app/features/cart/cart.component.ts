@@ -18,99 +18,99 @@ import { RestaurantService } from '@/shared/core/services/restaurant.service';
           <div class="flex items-center gap-3">
             <button
               (click)="goBack()"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               ←
             </button>
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">sacola atual</p>
-              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Carrinho</h1>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">sacola atual</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Carrinho</h1>
             </div>
           </div>
-          <app-badge class="hidden md:inline-flex" variant="info" size="md">
+          <z-badge class="hidden md:inline-flex" zType="info" zSize="md">
             {{ cartService.itemCount() }} itens
-          </app-badge>
+          </z-badge>
         </div>
       </header>
 
       <main class="app-page py-6">
         @if (cartService.isEmpty()) {
           <div class="space-y-6">
-            <app-card>
+            <z-card>
               <div class="py-14 text-center">
-                <p class="text-sm font-semibold uppercase tracking-[0.22em] text-stone-400">sua sacola</p>
-                <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950">Ainda esta vazia</h2>
-                <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-600">
+                <p class="text-sm font-semibold uppercase tracking-[0.22em] text-stone-400 dark:text-stone-500">sua sacola</p>
+                <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Ainda esta vazia</h2>
+                <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-600 dark:text-stone-300">
                   Volte para a vitrine, abra uma colecao pronta ou reuse seus favoritos para montar o pedido.
                 </p>
                 <div class="mt-6 flex flex-wrap justify-center gap-3">
-                  <app-button size="lg" (click)="goHome()">Voltar a loja</app-button>
-                  <app-button variant="secondary" size="lg" (click)="goToCollections()">
+                  <button z-button zSize="lg" (click)="goHome()">Voltar a loja</button>
+                  <button z-button zType="secondary" zSize="lg" (click)="goToCollections()">
                     Ver colecoes
-                  </app-button>
+                  </button>
                 </div>
               </div>
-            </app-card>
+            </z-card>
 
             @if (profileService.favoriteMenuItems().length > 0) {
-              <app-card>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">reaproveite favoritos</p>
-                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Itens que voce ja salvou</h3>
+              <z-card>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">reaproveite favoritos</p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Itens que voce ja salvou</h3>
                 <div class="mt-5 grid gap-3 md:grid-cols-2">
                   @for (item of profileService.favoriteMenuItems().slice(0, 4); track item.id) {
                     <button
                       type="button"
                       (click)="openRestaurant(item.restaurantId)"
-                      class="rounded-[22px] bg-stone-50 px-4 py-4 text-left transition hover:bg-stone-100"
+                      class="rounded-[22px] bg-stone-50 px-4 py-4 text-left transition hover:bg-stone-100 dark:bg-white/6 dark:hover:bg-white/10"
                     >
-                      <p class="font-semibold text-stone-950">{{ item.name }}</p>
-                      <p class="mt-1 text-sm text-stone-600">
+                      <p class="font-semibold text-stone-950 dark:text-stone-100">{{ item.name }}</p>
+                      <p class="mt-1 text-sm text-stone-600 dark:text-stone-300">
                         {{ getRestaurantName(item.restaurantId) }} · R$ {{ item.price | number: '1.2-2' }}
                       </p>
                     </button>
                   }
                 </div>
-              </app-card>
+              </z-card>
             }
 
             @if (recentRestaurants().length > 0) {
-              <app-card>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">retome rapido</p>
-                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Restaurantes explorados recentemente</h3>
+              <z-card>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">retome rapido</p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Restaurantes explorados recentemente</h3>
                 <div class="mt-5 flex flex-wrap gap-3">
                   @for (restaurant of recentRestaurants(); track restaurant.id) {
-                    <app-button variant="secondary" size="sm" (click)="openRestaurant(restaurant.id)">
+                    <button z-button zType="secondary" zSize="sm" (click)="openRestaurant(restaurant.id)">
                       {{ restaurant.name }}
-                    </app-button>
+                    </button>
                   }
                 </div>
-              </app-card>
+              </z-card>
             }
           </div>
         } @else {
           <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
             <section class="space-y-4">
               @if (cartService.cart()?.restaurant) {
-                <app-card>
+                <z-card>
                   <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                       <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">restaurante</p>
-                      <h2 class="mt-1 text-2xl font-semibold tracking-tight text-stone-950">
+                      <h2 class="mt-1 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                         {{ cartService.cart()!.restaurant!.name }}
                       </h2>
-                      <p class="mt-2 text-sm text-stone-600">
+                      <p class="mt-2 text-sm text-stone-600 dark:text-stone-300">
                         {{ cartService.cart()!.restaurant!.address }}
                       </p>
                     </div>
-                    <div class="rounded-[22px] bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-700">
+                    <div class="rounded-[22px] bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-700 dark:bg-orange-500/12 dark:text-orange-300">
                       Entrega em {{ cartService.cart()!.restaurant!.deliveryTime }} min
                     </div>
                   </div>
-                </app-card>
+                </z-card>
               }
 
               @for (item of cartService.items(); track item.menuItem.id) {
-                <app-card>
+                <z-card>
                   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-start gap-4">
                       <img
@@ -119,14 +119,14 @@ import { RestaurantService } from '@/shared/core/services/restaurant.service';
                         class="h-24 w-24 rounded-[22px] object-cover"
                       />
                       <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">
                           {{ item.menuItem.category }}
                         </p>
-                        <h3 class="mt-1 text-lg font-semibold tracking-tight text-stone-950">
+                        <h3 class="mt-1 text-lg font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                           {{ item.menuItem.name }}
                         </h3>
                         @if (item.notes) {
-                          <p class="mt-2 text-sm text-stone-600">{{ item.notes }}</p>
+                          <p class="mt-2 text-sm text-stone-600 dark:text-stone-300">{{ item.notes }}</p>
                         }
                         <p class="mt-3 text-base font-semibold text-orange-600">
                           R$ {{ item.subtotal | number: '1.2-2' }}
@@ -135,19 +135,19 @@ import { RestaurantService } from '@/shared/core/services/restaurant.service';
                     </div>
 
                     <div class="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
-                      <div class="inline-flex items-center rounded-full border border-stone-200 bg-white px-2 py-2 shadow-[0_8px_18px_rgba(118,60,24,0.08)]">
+                      <div class="inline-flex items-center rounded-full border border-stone-200 bg-white px-2 py-2 shadow-[0_8px_18px_rgba(118,60,24,0.08)] dark:border-white/10 dark:bg-white/8 dark:shadow-[0_10px_22px_rgba(0,0,0,0.28)]">
                         <button
                           (click)="decreaseQuantity(item.menuItem.id)"
-                          class="inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100"
+                          class="inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-white/10"
                         >
                           −
                         </button>
-                        <span class="min-w-8 text-center text-sm font-semibold text-stone-900">
+                        <span class="min-w-8 text-center text-sm font-semibold text-stone-900 dark:text-stone-100">
                           {{ item.quantity }}
                         </span>
                         <button
                           (click)="increaseQuantity(item.menuItem.id)"
-                          class="inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100"
+                          class="inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-white/10"
                         >
                           +
                         </button>
@@ -161,49 +161,49 @@ import { RestaurantService } from '@/shared/core/services/restaurant.service';
                       </button>
                     </div>
                   </div>
-                </app-card>
+                </z-card>
               }
             </section>
 
             <aside class="xl:sticky xl:top-24 xl:self-start">
-              <app-card>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">resumo da compra</p>
-                <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Finalizar pedido</h2>
+              <z-card>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">resumo da compra</p>
+                <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Finalizar pedido</h2>
 
-                <div class="mt-6 space-y-3 border-b border-stone-100 pb-5 text-sm">
-                  <div class="flex justify-between text-stone-600">
+                <div class="mt-6 space-y-3 border-b border-stone-100 pb-5 text-sm dark:border-white/8">
+                  <div class="flex justify-between text-stone-600 dark:text-stone-300">
                     <span>Subtotal</span>
-                    <span class="font-semibold text-stone-900">R$ {{ cartService.subtotal() | number: '1.2-2' }}</span>
+                    <span class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ cartService.subtotal() | number: '1.2-2' }}</span>
                   </div>
-                  <div class="flex justify-between text-stone-600">
+                  <div class="flex justify-between text-stone-600 dark:text-stone-300">
                     <span>Entrega</span>
-                    <span class="font-semibold text-stone-900">R$ {{ cartService.deliveryFee() | number: '1.2-2' }}</span>
+                    <span class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ cartService.deliveryFee() | number: '1.2-2' }}</span>
                   </div>
-                  <div class="flex justify-between text-stone-600">
+                  <div class="flex justify-between text-stone-600 dark:text-stone-300">
                     <span>Impostos</span>
-                    <span class="font-semibold text-stone-900">R$ {{ cartService.tax() | number: '1.2-2' }}</span>
+                    <span class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ cartService.tax() | number: '1.2-2' }}</span>
                   </div>
                 </div>
 
                 <div class="mt-5 flex items-end justify-between">
                   <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">total</p>
-                    <p class="text-3xl font-semibold tracking-tight text-stone-950">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">total</p>
+                    <p class="text-3xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                       R$ {{ cartService.total() | number: '1.2-2' }}
                     </p>
                   </div>
-                  <p class="text-sm text-stone-500">{{ cartService.itemCount() }} itens</p>
+                  <p class="text-sm text-stone-500 dark:text-stone-400">{{ cartService.itemCount() }} itens</p>
                 </div>
 
                 <div class="mt-6 space-y-3">
-                  <app-button size="lg" [fullWidth]="true" (click)="goToCheckout()">
+                  <button z-button zSize="lg" [zFull]="true" (click)="goToCheckout()">
                     Continuar para checkout
-                  </app-button>
-                  <app-button variant="secondary" size="lg" [fullWidth]="true" (click)="goHome()">
+                  </button>
+                  <button z-button zType="secondary" zSize="lg" [zFull]="true" (click)="goHome()">
                     Adicionar mais itens
-                  </app-button>
+                  </button>
                 </div>
-              </app-card>
+              </z-card>
             </aside>
           </div>
         }

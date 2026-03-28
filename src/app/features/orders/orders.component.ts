@@ -26,7 +26,7 @@ import { OrdersFacade } from './orders.facade';
               <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Meus pedidos</h1>
             </div>
           </div>
-          <app-badge variant="info" size="md">{{ orders().length }} pedidos</app-badge>
+          <z-badge zType="info" zSize="md">{{ orders().length }} pedidos</z-badge>
         </div>
       </header>
 
@@ -34,7 +34,7 @@ import { OrdersFacade } from './orders.facade';
         @if (loading()) {
           <app-loading variant="list" [count]="4" />
         } @else if (orders().length === 0) {
-          <app-card>
+          <z-card>
             <div class="py-14 text-center">
               <p class="text-sm font-semibold uppercase tracking-[0.18em] text-stone-400">sem historico</p>
               <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950">Voce ainda nao fez pedidos</h2>
@@ -42,23 +42,23 @@ import { OrdersFacade } from './orders.facade';
                 Explore a vitrine, monte seu carrinho e acompanhe tudo por aqui.
               </p>
               <div class="mt-6 flex justify-center">
-                <app-button size="lg" (click)="goHome()">Voltar a loja</app-button>
+                <button z-button zSize="lg" (click)="goHome()">Voltar a loja</button>
               </div>
             </div>
-          </app-card>
+          </z-card>
         } @else {
           <div class="grid gap-4">
             @for (order of orders(); track order.id) {
-              <app-card>
+              <z-card>
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                   <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-3">
                       <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
                         Pedido #{{ order.id.slice(-6) }}
                       </p>
-                      <app-badge [variant]="getStatusVariant(order.status)" size="md">
+                      <z-badge [zType]="getStatusVariant(order.status)" zSize="md">
                         {{ getStatusLabel(order.status) }}
-                      </app-badge>
+                      </z-badge>
                     </div>
 
                     <p class="mt-3 text-xl font-semibold tracking-tight text-stone-950">
@@ -88,12 +88,12 @@ import { OrdersFacade } from './orders.facade';
                       <p class="text-sm text-stone-500">{{ order.items.length }} itens</p>
                     </div>
 
-                    <app-button variant="secondary" [fullWidth]="true" (click)="viewOrderDetail(order.id)">
+                    <button z-button zType="secondary" [zFull]="true" (click)="viewOrderDetail(order.id)">
                       Ver detalhes
-                    </app-button>
+                    </button>
                   </div>
                 </div>
-              </app-card>
+              </z-card>
             }
           </div>
         }

@@ -55,7 +55,7 @@ interface AppCollection {
 
         <div class="grid gap-4 xl:grid-cols-2">
           @for (collection of collections(); track collection.id) {
-            <app-card>
+            <z-card>
               <div class="rounded-[26px] bg-gradient-to-br p-6 text-white" [ngClass]="collection.accent">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-white/75">colecao</p>
                 <h3 class="mt-2 text-3xl font-semibold tracking-tight">{{ collection.title }}</h3>
@@ -89,13 +89,13 @@ interface AppCollection {
                   </p>
                 </div>
                 <div class="flex gap-3">
-                  <app-button variant="secondary" size="sm" (click)="goToRestaurant(collection.restaurant.id)">
+                  <button z-button zType="secondary" zSize="sm" (click)="goToRestaurant(collection.restaurant.id)">
                     Ver restaurante
-                  </app-button>
-                  <app-button size="sm" (click)="loadCollection(collection.id)">Montar pedido</app-button>
+                  </button>
+                  <button z-button zSize="sm" (click)="loadCollection(collection.id)">Montar pedido</button>
                 </div>
               </div>
-            </app-card>
+            </z-card>
           }
         </div>
       </main>

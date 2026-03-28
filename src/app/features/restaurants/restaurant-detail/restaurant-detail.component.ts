@@ -81,13 +81,13 @@ import { MenuItem } from '@/shared/models';
               <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
                   <div class="mb-3 flex flex-wrap gap-2">
-                    <app-badge [variant]="restaurant()!.isOpen ? 'success' : 'danger'" size="md">
+                    <z-badge [zType]="restaurant()!.isOpen ? 'success' : 'danger'" zSize="md">
                       {{ restaurant()!.isOpen ? 'Aberto agora' : 'Fechado' }}
-                    </app-badge>
-                    <app-badge variant="info" size="md">{{ restaurant()!.category }}</app-badge>
-                    <app-button variant="secondary" size="sm" (click)="toggleFavorite()">
+                    </z-badge>
+                    <z-badge zType="info" zSize="md">{{ restaurant()!.category }}</z-badge>
+                    <button z-button zType="secondary" zSize="sm" (click)="toggleFavorite()">
                       {{ isFavorite() ? 'Favorito' : 'Salvar' }}
-                    </app-button>
+                    </button>
                   </div>
 
                   <h1 class="text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
@@ -118,7 +118,7 @@ import { MenuItem } from '@/shared/models';
 
           <section class="mt-6 grid gap-4 lg:grid-cols-2">
             @for (coupon of restaurantCoupons(); track coupon.code) {
-              <app-card>
+              <z-card>
                 <div class="flex items-start justify-between gap-4">
                   <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">
@@ -127,25 +127,25 @@ import { MenuItem } from '@/shared/models';
                     <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950">{{ coupon.title }}</h3>
                     <p class="mt-2 text-sm leading-6 text-stone-600">{{ coupon.description }}</p>
                   </div>
-                  <app-button
-                    size="sm"
-                    [variant]="profileService.isCouponSaved(coupon.code) ? 'secondary' : 'primary'"
+                  <button z-button
+                    zSize="sm"
+                    [zType]="profileService.isCouponSaved(coupon.code) ? 'secondary' : 'default'"
                     (click)="toggleSavedCoupon(coupon.code)"
                   >
                     {{ profileService.isCouponSaved(coupon.code) ? 'Salvo' : 'Salvar' }}
-                  </app-button>
+                  </button>
                 </div>
-              </app-card>
+              </z-card>
             }
           </section>
 
           <section class="mt-6">
             @if (menuItems().length === 0) {
-              <app-card>
+              <z-card>
                 <div class="py-10 text-center">
                   <p class="text-lg font-semibold text-stone-900">Menu vazio no momento</p>
                 </div>
-              </app-card>
+              </z-card>
             } @else {
               <div class="space-y-8">
                 @for (category of categories(); track category) {
@@ -177,7 +177,7 @@ import { MenuItem } from '@/shared/models';
         @if (selectedItem() && showQuantityModal()) {
           <div class="fixed inset-0 z-50 bg-stone-950/45 backdrop-blur-sm" (click)="closeModal()">
             <div class="absolute inset-x-0 bottom-0 mx-auto max-w-2xl p-4 sm:bottom-4" (click)="$event.stopPropagation()">
-              <app-card>
+              <z-card>
                 <div class="flex items-start justify-between gap-4">
                   <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">personalizar item</p>
@@ -216,7 +216,7 @@ import { MenuItem } from '@/shared/models';
                 </div>
 
                 <div class="mt-5">
-                  <app-textarea
+                  <z-textarea
                     label="Observacoes"
                     placeholder="Ex.: sem cebola, molho a parte, caprichar no queijo..."
                     [ngModel]="notes()"
@@ -226,14 +226,14 @@ import { MenuItem } from '@/shared/models';
                 </div>
 
                 <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <app-button variant="secondary" size="lg" [fullWidth]="true" (click)="closeModal()">
+                  <button z-button zType="secondary" zSize="lg" [zFull]="true" (click)="closeModal()">
                     Cancelar
-                  </app-button>
-                  <app-button size="lg" [fullWidth]="true" (click)="confirmAddToCart()">
+                  </button>
+                  <button z-button zSize="lg" [zFull]="true" (click)="confirmAddToCart()">
                     Adicionar ao carrinho
-                  </app-button>
+                  </button>
                 </div>
-              </app-card>
+              </z-card>
             </div>
           </div>
         }

@@ -1,82 +1,36 @@
-import { Component, input, output, ChangeDetectionStrategy, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Directive, booleanAttribute, input } from '@angular/core';
+import { mergeClasses, type ClassValue } from '@/shared/utils/merge-classes';
 
-@Component({
-  selector: 'app-input',
+const inputBaseClasses =
+  'w-full rounded-[22px] border border-stone-200 bg-white/88 px-4 py-3 text-sm text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-100 disabled:bg-stone-100 disabled:text-stone-400 dark:border-white/10 dark:bg-white/6 dark:text-stone-100 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] dark:placeholder:text-stone-500 dark:focus:border-orange-400 dark:focus:ring-orange-500/20 dark:disabled:bg-white/4 dark:disabled:text-stone-500';
+
+export function getInputClasses(className?: ClassValue) {
+  return mergeClasses(inputBaseClasses, className);
+}
+
+@Directive({
+  selector: 'input[z-input], textarea[z-input]',
   standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'block',
+    '[attr.disabled]': 'resolvedDisabled()',
+    '[attr.required]': 'resolvedRequired()',
+    '[class]': 'classes()',
   },
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputComponent),
-      multi: true,
-    },
-  ],
-  template: `
-    <div class="w-full">
-      @if (label()) {
-        <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800">
-          {{ label() }}
-        </label>
-      }
-
-      <input
-        [type]="type()"
-        [placeholder]="placeholder()"
-        [disabled]="disabled()"
-        [attr.required]="required()"
-        [value]="value"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        class="w-full rounded-[22px] border border-stone-200 bg-white/88 px-4 py-3 text-sm text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-100 disabled:bg-stone-100 disabled:text-stone-400"
-      />
-
-      @if (error()) {
-        <p class="mt-2 text-sm text-red-600">{{ error() }}</p>
-      }
-    </div>
-  `,
 })
-export class InputComponent implements ControlValueAccessor {
-  type = input<string>('text');
-  placeholder = input<string>('');
-  label = input<string | undefined>();
-  error = input<string | undefined>();
-  disabled = input<boolean>(false);
-  required = input<boolean>(false);
+export class ZardInputDirective {
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly class = input<ClassValue>('', { alias: 'class' });
 
-  value: string = '';
-  private onChange = (value: string) => {};
-  private onTouched = () => {};
-
-  writeValue(value: string): void {
-    this.value = value || '';
+  protected resolvedDisabled() {
+    return this.disabled() ? true : null;
   }
 
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
+  protected resolvedRequired() {
+    return this.required() ? true : null;
   }
 
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    // Implementar se necessário
-  }
-
-  onInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.value = target.value;
-    this.onChange(this.value);
-  }
-
-  onBlur(): void {
-    this.onTouched();
+  protected classes() {
+    return getInputClasses(this.class());
   }
 }

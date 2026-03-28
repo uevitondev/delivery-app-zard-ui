@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import {
   ButtonComponent,
   CardComponent,
-  InputComponent,
   SelectComponent,
   TextareaComponent,
+  ZardInputDirective,
 } from '@/shared/components';
 import { ToastService } from '@/shared/core/services/toast.service';
 import { PaymentMethodType } from '@/shared/models';
@@ -21,9 +21,9 @@ import { CheckoutFacade } from './checkout.facade';
     FormsModule,
     CardComponent,
     ButtonComponent,
-    InputComponent,
     SelectComponent,
     TextareaComponent,
+    ZardInputDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -33,13 +33,13 @@ import { CheckoutFacade } from './checkout.facade';
           <div class="flex items-center gap-3">
             <button
               (click)="goBack()"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               ←
             </button>
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">pagamento seguro</p>
-              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Checkout</h1>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">pagamento seguro</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Checkout</h1>
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@ import { CheckoutFacade } from './checkout.facade';
       <main class="app-page py-6">
         <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <section class="space-y-5">
-            <app-card header="Endereco de entrega">
+            <z-card zTitle="Endereco de entrega">
               <div class="space-y-3">
                 @for (address of addressService.addresses(); track address.id) {
                   <button
@@ -58,17 +58,20 @@ import { CheckoutFacade } from './checkout.facade';
                     [class.bg-orange-50]="selectedAddressId() === address.id"
                     [class.border-stone-200]="selectedAddressId() !== address.id"
                     [class.bg-white]="selectedAddressId() !== address.id"
+                    [class.dark:border-white/10]="selectedAddressId() !== address.id"
+                    [class.dark:bg-white/6]="selectedAddressId() !== address.id"
+                    [class.dark:bg-orange-500/12]="selectedAddressId() === address.id"
                     (click)="selectAddress(address.id)"
                   >
                     <div class="flex items-start justify-between gap-3">
                       <div>
-                        <p class="text-base font-semibold text-stone-950">
+                        <p class="text-base font-semibold text-stone-950 dark:text-stone-100">
                           {{ address.street }}, {{ address.number }}
                         </p>
-                        <p class="mt-1 text-sm text-stone-600">
+                        <p class="mt-1 text-sm text-stone-600 dark:text-stone-300">
                           {{ address.neighborhood }}, {{ address.city }} - {{ address.state }}
                         </p>
-                        <p class="mt-1 text-sm text-stone-500">CEP {{ address.zipCode }}</p>
+                        <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">CEP {{ address.zipCode }}</p>
                       </div>
                       @if (address.isDefault) {
                         <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
@@ -81,52 +84,48 @@ import { CheckoutFacade } from './checkout.facade';
               </div>
 
               <div class="mt-5">
-                <app-button variant="ghost" [fullWidth]="true" (click)="toggleNewAddressForm()">
+                <button z-button zType="ghost" [zFull]="true" (click)="toggleNewAddressForm()">
                   {{ showNewAddressForm() ? 'Fechar novo endereco' : 'Adicionar novo endereco' }}
-                </app-button>
+                </button>
               </div>
 
               @if (showNewAddressForm()) {
-                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5 sm:grid-cols-2">
+                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5 dark:border-white/8 sm:grid-cols-2">
                   <div class="sm:col-span-2">
-                    <app-input
-                      label="Rua"
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Rua</label>
+                    <input
+                      z-input
                       placeholder="Nome da rua"
                       [(ngModel)]="newAddress.street"
                       name="newStreet"
                     />
                   </div>
-                  <app-input
-                    label="Numero"
-                    placeholder="123"
-                    [(ngModel)]="newAddress.number"
-                    name="newNumber"
-                  />
-                  <app-input
-                    label="Complemento"
-                    placeholder="Apto, bloco, referencia"
-                    [(ngModel)]="newAddress.complement"
-                    name="newComplement"
-                  />
-                  <app-input
-                    label="Bairro"
-                    placeholder="Bairro"
-                    [(ngModel)]="newAddress.neighborhood"
-                    name="newNeighborhood"
-                  />
-                  <app-input
-                    label="Cidade"
-                    placeholder="Cidade"
-                    [(ngModel)]="newAddress.city"
-                    name="newCity"
-                  />
-                  <app-input
-                    label="CEP"
-                    placeholder="12345-678"
-                    [(ngModel)]="newAddress.zipCode"
-                    name="newZipCode"
-                  />
-                  <app-select
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Numero</label>
+                    <input z-input placeholder="123" [(ngModel)]="newAddress.number" name="newNumber" />
+                  </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Complemento</label>
+                    <input
+                      z-input
+                      placeholder="Apto, bloco, referencia"
+                      [(ngModel)]="newAddress.complement"
+                      name="newComplement"
+                    />
+                  </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Bairro</label>
+                    <input z-input placeholder="Bairro" [(ngModel)]="newAddress.neighborhood" name="newNeighborhood" />
+                  </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Cidade</label>
+                    <input z-input placeholder="Cidade" [(ngModel)]="newAddress.city" name="newCity" />
+                  </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">CEP</label>
+                    <input z-input placeholder="12345-678" [(ngModel)]="newAddress.zipCode" name="newZipCode" />
+                  </div>
+                  <z-select
                     label="Estado"
                     placeholder="Selecione"
                     [options]="stateOptions"
@@ -135,19 +134,19 @@ import { CheckoutFacade } from './checkout.facade';
                   />
 
                   <div class="sm:col-span-2">
-                    <app-button
-                      [fullWidth]="true"
+                    <button z-button
+                      [zFull]="true"
                       [disabled]="!isNewAddressValid()"
                       (click)="addAndSelectAddress()"
                     >
                       Salvar endereco
-                    </app-button>
+                    </button>
                   </div>
                 </div>
               }
-            </app-card>
+            </z-card>
 
-            <app-card header="Pagamento">
+            <z-card zTitle="Pagamento">
               <div class="space-y-3">
                 @for (paymentMethod of profileService.paymentMethods(); track paymentMethod.id) {
                   <button
@@ -157,15 +156,18 @@ import { CheckoutFacade } from './checkout.facade';
                     [class.bg-orange-50]="selectedPaymentMethodId() === paymentMethod.id"
                     [class.border-stone-200]="selectedPaymentMethodId() !== paymentMethod.id"
                     [class.bg-white]="selectedPaymentMethodId() !== paymentMethod.id"
+                    [class.dark:border-white/10]="selectedPaymentMethodId() !== paymentMethod.id"
+                    [class.dark:bg-white/6]="selectedPaymentMethodId() !== paymentMethod.id"
+                    [class.dark:bg-orange-500/12]="selectedPaymentMethodId() === paymentMethod.id"
                     (click)="selectedPaymentMethodId.set(paymentMethod.id)"
                   >
                     <div class="flex items-center justify-between gap-3">
                       <div>
-                        <p class="font-semibold text-stone-950">{{ paymentMethod.label || formatPaymentMethod(paymentMethod.type) }}</p>
-                        <p class="mt-1 text-sm text-stone-500">{{ formatPaymentMethod(paymentMethod.type) }}</p>
+                        <p class="font-semibold text-stone-950 dark:text-stone-100">{{ paymentMethod.label || formatPaymentMethod(paymentMethod.type) }}</p>
+                        <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">{{ formatPaymentMethod(paymentMethod.type) }}</p>
                       </div>
                       @if (paymentMethod.isDefault) {
-                        <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
+                        <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600 dark:bg-white/8 dark:text-stone-300">
                           Principal
                         </span>
                       }
@@ -175,59 +177,67 @@ import { CheckoutFacade } from './checkout.facade';
               </div>
 
               <div class="mt-5">
-                <app-button variant="ghost" [fullWidth]="true" (click)="toggleNewPaymentForm()">
+                <button z-button zType="ghost" [zFull]="true" (click)="toggleNewPaymentForm()">
                   {{ showNewPaymentForm() ? 'Fechar novo metodo' : 'Adicionar metodo de pagamento' }}
-                </app-button>
+                </button>
               </div>
 
               @if (showNewPaymentForm()) {
-                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5">
-                  <app-select
+                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5 dark:border-white/8">
+                  <z-select
                     label="Tipo"
                     placeholder="Selecione"
                     [options]="paymentTypeOptions"
                     [(ngModel)]="newPayment.type"
                     name="paymentType"
                   />
-                  <app-input
-                    label="Nome exibido"
-                    placeholder="Ex.: Visa final 4242"
-                    [(ngModel)]="newPayment.label"
-                    name="paymentLabel"
-                  />
-                  <app-input
-                    label="Ultimos 4 digitos"
-                    placeholder="4242"
-                    [(ngModel)]="newPayment.lastDigits"
-                    name="paymentDigits"
-                  />
-                  <app-button
-                    [fullWidth]="true"
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Nome exibido</label>
+                    <input
+                      z-input
+                      placeholder="Ex.: Visa final 4242"
+                      [(ngModel)]="newPayment.label"
+                      name="paymentLabel"
+                    />
+                  </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">
+                      Ultimos 4 digitos
+                    </label>
+                    <input
+                      z-input
+                      placeholder="4242"
+                      [(ngModel)]="newPayment.lastDigits"
+                      name="paymentDigits"
+                    />
+                  </div>
+                  <button z-button
+                    [zFull]="true"
                     [disabled]="!isNewPaymentValid()"
                     (click)="addPaymentMethod()"
                   >
                     Salvar metodo
-                  </app-button>
+                  </button>
                 </div>
               }
-            </app-card>
+            </z-card>
 
-            <app-card header="Cupom">
-              <app-input
-                label="Codigo promocional"
-                placeholder="Ex.: SAVE10"
-                [(ngModel)]="couponCode"
-                name="couponCode"
-              />
+            <z-card zTitle="Cupom">
+              <div>
+                <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">
+                  Codigo promocional
+                </label>
+                <input z-input placeholder="Ex.: SAVE10" [(ngModel)]="couponCode" name="couponCode" />
+              </div>
 
               <div class="mt-4 flex flex-col gap-3 sm:flex-row">
-                <app-button variant="secondary" [fullWidth]="true" (click)="applyCoupon()">
+                <button z-button zType="secondary" [zFull]="true" (click)="applyCoupon()">
                   Aplicar cupom
-                </app-button>
+                </button>
                 @if (appliedCoupon()) {
-                  <app-button variant="ghost" [fullWidth]="true" (click)="removeCoupon()">
+                  <button z-button zType="ghost" [zFull]="true" (click)="removeCoupon()">
                     Remover
-                  </app-button>
+                  </button>
                 }
               </div>
 
@@ -243,48 +253,48 @@ import { CheckoutFacade } from './checkout.facade';
                   </p>
                 </div>
               }
-            </app-card>
+            </z-card>
 
-            <app-card header="Observacoes para entrega">
-              <app-textarea
+            <z-card zTitle="Observacoes para entrega">
+              <z-textarea
                 label="Instrucoes"
                 placeholder="Ex.: tocar interfone, sem molho, deixar na portaria..."
                 [(ngModel)]="notes"
                 name="notes"
                 [rows]="5"
               />
-            </app-card>
+            </z-card>
           </section>
 
           <aside class="xl:sticky xl:top-24 xl:self-start">
-            <app-card>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">resumo</p>
-              <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Confirmar pedido</h2>
+            <z-card>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">resumo</p>
+              <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Confirmar pedido</h2>
 
               <div class="mt-5 space-y-4">
                 @for (item of cartService.items(); track item.menuItem.id) {
-                  <div class="flex items-center justify-between gap-3 rounded-[22px] bg-stone-50 px-4 py-3">
+                  <div class="flex items-center justify-between gap-3 rounded-[22px] bg-stone-50 px-4 py-3 dark:bg-white/6">
                     <div>
-                      <p class="font-semibold text-stone-900">{{ item.menuItem.name }}</p>
-                      <p class="text-sm text-stone-500">{{ item.quantity }}x item</p>
+                      <p class="font-semibold text-stone-900 dark:text-stone-100">{{ item.menuItem.name }}</p>
+                      <p class="text-sm text-stone-500 dark:text-stone-400">{{ item.quantity }}x item</p>
                     </div>
-                    <p class="font-semibold text-stone-900">R$ {{ item.subtotal | number: '1.2-2' }}</p>
+                    <p class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ item.subtotal | number: '1.2-2' }}</p>
                   </div>
                 }
               </div>
 
-              <div class="mt-6 space-y-3 border-t border-stone-100 pt-5 text-sm">
-                <div class="flex justify-between text-stone-600">
+              <div class="mt-6 space-y-3 border-t border-stone-100 pt-5 text-sm dark:border-white/8">
+                <div class="flex justify-between text-stone-600 dark:text-stone-300">
                   <span>Subtotal</span>
-                  <span class="font-semibold text-stone-900">R$ {{ cartService.subtotal() | number: '1.2-2' }}</span>
+                  <span class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ cartService.subtotal() | number: '1.2-2' }}</span>
                 </div>
-                <div class="flex justify-between text-stone-600">
+                <div class="flex justify-between text-stone-600 dark:text-stone-300">
                   <span>Entrega</span>
-                  <span class="font-semibold text-stone-900">R$ {{ cartService.deliveryFee() | number: '1.2-2' }}</span>
+                  <span class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ cartService.deliveryFee() | number: '1.2-2' }}</span>
                 </div>
-                <div class="flex justify-between text-stone-600">
+                <div class="flex justify-between text-stone-600 dark:text-stone-300">
                   <span>Impostos</span>
-                  <span class="font-semibold text-stone-900">R$ {{ cartService.tax() | number: '1.2-2' }}</span>
+                  <span class="font-semibold text-stone-900 dark:text-stone-100">R$ {{ cartService.tax() | number: '1.2-2' }}</span>
                 </div>
                 @if (appliedCoupon()) {
                   <div class="flex justify-between text-emerald-700">
@@ -296,27 +306,27 @@ import { CheckoutFacade } from './checkout.facade';
 
               <div class="mt-5 flex items-end justify-between">
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">total</p>
-                  <p class="text-3xl font-semibold tracking-tight text-stone-950">
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">total</p>
+                  <p class="text-3xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                     R$ {{ checkoutTotal() | number: '1.2-2' }}
                   </p>
                 </div>
               </div>
 
               <div class="mt-6 space-y-3">
-                <app-button
-                  size="lg"
-                  [fullWidth]="true"
+                <button z-button
+                  zSize="lg"
+                  [zFull]="true"
                   [disabled]="!isFormValid()"
                   (click)="confirmOrder()"
                 >
                   Confirmar pedido
-                </app-button>
-                <app-button variant="secondary" size="lg" [fullWidth]="true" (click)="goBack()">
+                </button>
+                <button z-button zType="secondary" zSize="lg" [zFull]="true" (click)="goBack()">
                   Voltar
-                </app-button>
+                </button>
               </div>
-            </app-card>
+            </z-card>
           </aside>
         </div>
       </main>

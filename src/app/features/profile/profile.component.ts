@@ -6,8 +6,8 @@ import {
   BadgeComponent,
   ButtonComponent,
   CardComponent,
-  InputComponent,
   SelectComponent,
+  ZardInputDirective,
 } from '@/shared/components';
 import { AddressService } from '@/shared/core/services/address.service';
 import { AuthService } from '@/shared/core/services/auth.service';
@@ -26,8 +26,8 @@ import { PaymentMethodType } from '@/shared/models';
     CardComponent,
     ButtonComponent,
     BadgeComponent,
-    InputComponent,
     SelectComponent,
+    ZardInputDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -37,13 +37,13 @@ import { PaymentMethodType } from '@/shared/models';
           <div class="flex items-center gap-3">
             <button
               (click)="goBack()"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/8 dark:text-stone-100 dark:shadow-[0_12px_28px_rgba(0,0,0,0.28)]"
             >
               ←
             </button>
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">conta</p>
-              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Perfil</h1>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">conta</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Perfil</h1>
             </div>
           </div>
         </div>
@@ -52,159 +52,159 @@ import { PaymentMethodType } from '@/shared/models';
       <main class="app-page py-6">
         <div class="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
           <div class="space-y-6">
-            <app-card>
+            <z-card>
               <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
                 <div class="flex h-24 w-24 items-center justify-center rounded-[28px] bg-[linear-gradient(135deg,#ff8a55_0%,#ff5a36_100%)] text-3xl font-semibold text-white shadow-[0_18px_34px_rgba(255,107,53,0.24)]">
                   {{ getInitials() }}
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">usuario ativo</p>
-                  <h2 class="mt-1 text-3xl font-semibold tracking-tight text-stone-950">
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">usuario ativo</p>
+                  <h2 class="mt-1 text-3xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                     {{ authService.user()?.name }}
                   </h2>
-                  <p class="mt-2 text-sm text-stone-600">{{ authService.user()?.email }}</p>
+                  <p class="mt-2 text-sm text-stone-600 dark:text-stone-300">{{ authService.user()?.email }}</p>
                   <div class="mt-4 flex flex-wrap gap-2">
-                    <app-badge variant="success" size="md">Conta autenticada</app-badge>
+                    <z-badge zType="success" zSize="md">Conta autenticada</z-badge>
                     @if (authService.isMockMode()) {
-                      <app-badge variant="warning" size="md">Modo mock</app-badge>
+                      <z-badge zType="warning" zSize="md">Modo mock</z-badge>
                     }
                   </div>
                 </div>
               </div>
 
               <div class="mt-8 grid gap-3 sm:grid-cols-3">
-                <div class="rounded-[24px] bg-stone-50 px-4 py-4">
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">enderecos</p>
-                  <p class="mt-2 text-2xl font-semibold text-stone-950">{{ addressService.addresses().length }}</p>
+                <div class="rounded-[24px] bg-stone-50 px-4 py-4 dark:bg-white/6">
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">enderecos</p>
+                  <p class="mt-2 text-2xl font-semibold text-stone-950 dark:text-stone-100">{{ addressService.addresses().length }}</p>
                 </div>
-                <div class="rounded-[24px] bg-stone-50 px-4 py-4">
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">pagamentos</p>
-                  <p class="mt-2 text-2xl font-semibold text-stone-950">{{ profileService.paymentMethods().length }}</p>
+                <div class="rounded-[24px] bg-stone-50 px-4 py-4 dark:bg-white/6">
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">pagamentos</p>
+                  <p class="mt-2 text-2xl font-semibold text-stone-950 dark:text-stone-100">{{ profileService.paymentMethods().length }}</p>
                 </div>
-                <div class="rounded-[24px] bg-stone-50 px-4 py-4">
-                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">favoritos</p>
-                  <p class="mt-2 text-2xl font-semibold text-stone-950">{{ profileService.favoriteRestaurantIds().length }}</p>
+                <div class="rounded-[24px] bg-stone-50 px-4 py-4 dark:bg-white/6">
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">favoritos</p>
+                  <p class="mt-2 text-2xl font-semibold text-stone-950 dark:text-stone-100">{{ profileService.favoriteRestaurantIds().length }}</p>
                 </div>
               </div>
-            </app-card>
+            </z-card>
 
             @if (!profileService.hasCompletedOnboarding()) {
-              <app-card>
+              <z-card>
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">onboarding rapido</p>
-                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Personalize sua vitrine</h3>
-                <p class="mt-2 text-sm leading-6 text-stone-600">
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Personalize sua vitrine</h3>
+                <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
                   Escolha uma cozinha favorita para deixar o app mais alinhado com o seu estilo de pedido.
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
                   @for (cuisine of cuisineOptions; track cuisine) {
-                    <app-button
-                      size="sm"
-                      [variant]="selectedCuisine() === cuisine ? 'primary' : 'secondary'"
+                    <button z-button
+                      zSize="sm"
+                      [zType]="selectedCuisine() === cuisine ? 'default' : 'secondary'"
                       (click)="selectedCuisine.set(cuisine)"
                     >
                       {{ cuisine }}
-                    </app-button>
+                    </button>
                   }
                 </div>
 
                 <div class="mt-5">
-                  <app-button [fullWidth]="true" (click)="completeOnboarding()">Salvar preferencia</app-button>
+                  <button z-button [zFull]="true" (click)="completeOnboarding()">Salvar preferencia</button>
                 </div>
-              </app-card>
+              </z-card>
             } @else {
-              <app-card>
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">preferencia principal</p>
-                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+              <z-card>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">preferencia principal</p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">
                   {{ profileService.preferredCuisine() || 'Sem preferencia definida' }}
                 </h3>
-                <p class="mt-2 text-sm leading-6 text-stone-600">
+                <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
                   Essa preferencia pode orientar a descoberta de restaurantes nas proximas etapas do app.
                 </p>
-              </app-card>
+              </z-card>
             }
 
-            <app-card header="Restaurantes favoritos">
+            <z-card zTitle="Restaurantes favoritos">
               @if (profileService.favoriteRestaurants().length === 0) {
-                <p class="text-sm text-stone-600">Voce ainda nao favoritou restaurantes.</p>
+                <p class="text-sm text-stone-600 dark:text-stone-300">Voce ainda nao favoritou restaurantes.</p>
               } @else {
                 <div class="space-y-3">
                   @for (restaurant of profileService.favoriteRestaurants(); track restaurant.id) {
                     <button
                       type="button"
                       (click)="goToRestaurant(restaurant.id)"
-                      class="flex w-full items-center justify-between rounded-[22px] bg-stone-50 px-4 py-4 text-left transition hover:bg-stone-100"
+                      class="flex w-full items-center justify-between rounded-[22px] bg-stone-50 px-4 py-4 text-left transition hover:bg-stone-100 dark:bg-white/6 dark:hover:bg-white/10"
                     >
                       <div>
-                        <p class="font-semibold text-stone-900">{{ restaurant.name }}</p>
-                        <p class="mt-1 text-sm text-stone-600">{{ restaurant.category }} · {{ restaurant.deliveryTime }} min</p>
+                        <p class="font-semibold text-stone-900 dark:text-stone-100">{{ restaurant.name }}</p>
+                        <p class="mt-1 text-sm text-stone-600 dark:text-stone-300">{{ restaurant.category }} · {{ restaurant.deliveryTime }} min</p>
                       </div>
                       <span class="text-lg text-orange-500">♥</span>
                     </button>
                   }
                 </div>
               }
-            </app-card>
+            </z-card>
 
-            <app-card header="Pratos favoritos">
+            <z-card zTitle="Pratos favoritos">
               @if (profileService.favoriteMenuItems().length === 0) {
-                <p class="text-sm text-stone-600">Salve pratos para repetir seus pedidos mais rapido.</p>
+                <p class="text-sm text-stone-600 dark:text-stone-300">Salve pratos para repetir seus pedidos mais rapido.</p>
               } @else {
                 <div class="space-y-3">
                   @for (item of profileService.favoriteMenuItems(); track item.id) {
-                    <div class="rounded-[22px] bg-stone-50 px-4 py-4">
+                    <div class="rounded-[22px] bg-stone-50 px-4 py-4 dark:bg-white/6">
                       <div class="flex items-start justify-between gap-3">
                         <div>
-                          <p class="font-semibold text-stone-900">{{ item.name }}</p>
-                          <p class="mt-1 text-sm text-stone-600">
+                          <p class="font-semibold text-stone-900 dark:text-stone-100">{{ item.name }}</p>
+                          <p class="mt-1 text-sm text-stone-600 dark:text-stone-300">
                             {{ getRestaurantName(item.restaurantId) }} · {{ item.category }}
                           </p>
                         </div>
-                        <p class="font-semibold text-stone-950">R$ {{ item.price | number: '1.2-2' }}</p>
+                        <p class="font-semibold text-stone-950 dark:text-stone-100">R$ {{ item.price | number: '1.2-2' }}</p>
                       </div>
                     </div>
                   }
                 </div>
               }
-            </app-card>
+            </z-card>
           </div>
 
           <div class="space-y-6">
-            <app-card header="Carteira de cupons">
+            <z-card zTitle="Carteira de cupons">
               @if (savedCoupons().length === 0) {
-                <p class="text-sm text-stone-600">Salve cupons na home ou no restaurante para acessar aqui.</p>
+                <p class="text-sm text-stone-600 dark:text-stone-300">Salve cupons na home ou no restaurante para acessar aqui.</p>
               } @else {
                 <div class="space-y-3">
                   @for (coupon of savedCoupons(); track coupon.code) {
-                    <div class="rounded-[22px] bg-stone-50 px-4 py-4">
+                    <div class="rounded-[22px] bg-stone-50 px-4 py-4 dark:bg-white/6">
                       <div class="flex items-start justify-between gap-3">
                         <div>
-                          <p class="font-semibold text-stone-900">{{ coupon.code }}</p>
-                          <p class="mt-1 text-sm text-stone-600">{{ coupon.title }}</p>
+                          <p class="font-semibold text-stone-900 dark:text-stone-100">{{ coupon.code }}</p>
+                          <p class="mt-1 text-sm text-stone-600 dark:text-stone-300">{{ coupon.title }}</p>
                           <p class="mt-1 text-xs uppercase tracking-[0.18em] text-orange-500">
                             {{ getCouponMeta(coupon) }}
                           </p>
                         </div>
-                        <app-button variant="ghost" size="sm" (click)="removeSavedCoupon(coupon.code)">
+                        <button z-button zType="ghost" zSize="sm" (click)="removeSavedCoupon(coupon.code)">
                           Remover
-                        </app-button>
+                        </button>
                       </div>
                     </div>
                   }
                 </div>
               }
-            </app-card>
+            </z-card>
 
-            <app-card header="Metodos de pagamento">
+            <z-card zTitle="Metodos de pagamento">
               <div class="space-y-3">
                 @for (paymentMethod of profileService.paymentMethods(); track paymentMethod.id) {
-                  <div class="rounded-[22px] bg-stone-50 px-4 py-4">
+                  <div class="rounded-[22px] bg-stone-50 px-4 py-4 dark:bg-white/6">
                     <div class="flex items-start justify-between gap-3">
                       <div>
-                        <p class="font-semibold text-stone-900">
+                        <p class="font-semibold text-stone-900 dark:text-stone-100">
                           {{ paymentMethod.label || formatPaymentMethod(paymentMethod.type) }}
                         </p>
-                        <p class="mt-1 text-sm text-stone-500">
+                        <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">
                           {{ formatPaymentMethod(paymentMethod.type) }}
                           @if (paymentMethod.lastDigits) {
                             <span> · final {{ paymentMethod.lastDigits }}</span>
@@ -212,80 +212,88 @@ import { PaymentMethodType } from '@/shared/models';
                         </p>
                       </div>
                       @if (paymentMethod.isDefault) {
-                        <app-badge variant="info" size="sm">Principal</app-badge>
+                        <z-badge zType="info" zSize="sm">Principal</z-badge>
                       }
                     </div>
 
                     <div class="mt-4 flex flex-wrap gap-2">
                       @if (!paymentMethod.isDefault) {
-                        <app-button variant="secondary" size="sm" (click)="setDefaultPayment(paymentMethod.id)">
+                        <button z-button zType="secondary" zSize="sm" (click)="setDefaultPayment(paymentMethod.id)">
                           Tornar principal
-                        </app-button>
+                        </button>
                       }
-                      <app-button variant="ghost" size="sm" (click)="removePayment(paymentMethod.id)">
+                      <button z-button zType="ghost" zSize="sm" (click)="removePayment(paymentMethod.id)">
                         Remover
-                      </app-button>
+                      </button>
                     </div>
                   </div>
                 }
               </div>
 
               <div class="mt-5">
-                <app-button variant="ghost" [fullWidth]="true" (click)="togglePaymentForm()">
+                <button z-button zType="ghost" [zFull]="true" (click)="togglePaymentForm()">
                   {{ showPaymentForm() ? 'Fechar novo metodo' : 'Adicionar metodo' }}
-                </app-button>
+                </button>
               </div>
 
               @if (showPaymentForm()) {
-                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5">
-                  <app-select
+                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5 dark:border-white/8">
+                  <z-select
                     label="Tipo"
                     placeholder="Selecione"
                     [options]="paymentTypeOptions"
                     [(ngModel)]="newPayment.type"
                     name="newPaymentType"
                   />
-                  <app-input
-                    label="Nome exibido"
-                    placeholder="Ex.: Mastercard final 7788"
-                    [(ngModel)]="newPayment.label"
-                    name="newPaymentLabel"
-                  />
-                  <app-input
-                    label="Ultimos 4 digitos"
-                    placeholder="7788"
-                    [(ngModel)]="newPayment.lastDigits"
-                    name="newPaymentDigits"
-                  />
-                  <app-button [fullWidth]="true" [disabled]="!isNewPaymentValid()" (click)="addPaymentMethod()">
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">Nome exibido</label>
+                    <input
+                      z-input
+                      placeholder="Ex.: Mastercard final 7788"
+                      [(ngModel)]="newPayment.label"
+                      name="newPaymentLabel"
+                    />
+                  </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800 dark:text-stone-200">
+                      Ultimos 4 digitos
+                    </label>
+                    <input
+                      z-input
+                      placeholder="7788"
+                      [(ngModel)]="newPayment.lastDigits"
+                      name="newPaymentDigits"
+                    />
+                  </div>
+                  <button z-button [zFull]="true" [disabled]="!isNewPaymentValid()" (click)="addPaymentMethod()">
                     Salvar metodo
-                  </app-button>
+                  </button>
                 </div>
               }
-            </app-card>
+            </z-card>
 
-            <app-card>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">sessao</p>
-              <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950">Encerrar acesso</h3>
-              <p class="mt-2 text-sm leading-6 text-stone-600">
+            <z-card>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">sessao</p>
+              <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950 dark:text-stone-100">Encerrar acesso</h3>
+              <p class="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
                 Saia da sua conta quando quiser. O app continuara responsivo e seguro.
               </p>
 
               <div class="mt-5">
-                <app-button variant="danger" size="lg" [fullWidth]="true" (click)="logout()">
+                <button z-button zType="destructive" zSize="lg" [zFull]="true" (click)="logout()">
                   Fazer logout
-                </app-button>
-                <app-button class="mt-3" variant="secondary" size="lg" [fullWidth]="true" (click)="goToFavorites()">
+                </button>
+                <button z-button class="mt-3" zType="secondary" zSize="lg" [zFull]="true" (click)="goToFavorites()">
                   Ver favoritos
-                </app-button>
-                <app-button class="mt-3" variant="ghost" size="lg" [fullWidth]="true" (click)="goToFavoriteItems()">
+                </button>
+                <button z-button class="mt-3" zType="ghost" zSize="lg" [zFull]="true" (click)="goToFavoriteItems()">
                   Ver pratos salvos
-                </app-button>
-                <app-button class="mt-3" variant="ghost" size="lg" [fullWidth]="true" (click)="goToWallet()">
+                </button>
+                <button z-button class="mt-3" zType="ghost" zSize="lg" [zFull]="true" (click)="goToWallet()">
                   Abrir carteira de cupons
-                </app-button>
+                </button>
               </div>
-            </app-card>
+            </z-card>
           </div>
         </div>
       </main>

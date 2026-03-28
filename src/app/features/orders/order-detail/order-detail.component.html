@@ -22,20 +22,20 @@
     }
 
     @if (error()) {
-      <app-card>
+      <z-card>
         <div class="py-10 text-center">
           <p class="text-lg font-semibold text-red-600">{{ error() }}</p>
           <div class="mt-5 flex justify-center">
             <button (click)="goBack()" class="text-sm font-semibold text-orange-600">Voltar para pedidos</button>
           </div>
         </div>
-      </app-card>
+      </z-card>
     }
 
     @if (order() && !error()) {
       <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <section class="space-y-5">
-          <app-card>
+          <z-card>
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
@@ -49,14 +49,14 @@
                 </p>
               </div>
 
-              <app-badge [variant]="getStatusVariant(order()!.status)" size="lg">
+              <z-badge [zType]="getStatusVariant(order()!.status)" zSize="lg">
                 {{ getStatusLabel(order()!.status) }}
-              </app-badge>
+              </z-badge>
             </div>
-          </app-card>
+          </z-card>
 
           @if (trackingStatus(); as tracking) {
-            <app-card>
+            <z-card>
               <div class="rounded-[28px] bg-[radial-gradient(circle_at_top_left,rgba(255,237,213,0.9),rgba(255,255,255,0.94)_55%,rgba(255,244,230,0.92))] p-5">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div class="max-w-xl">
@@ -126,10 +126,10 @@
                   }
                 </div>
               </div>
-            </app-card>
+            </z-card>
           }
 
-          <app-card header="Itens do pedido">
+          <z-card zTitle="Itens do pedido">
             <div class="space-y-3">
               @for (item of order()!.items; track item.menuItem.id) {
                 <div class="flex items-start justify-between gap-4 rounded-[24px] bg-stone-50 px-4 py-4">
@@ -144,9 +144,9 @@
                 </div>
               }
             </div>
-          </app-card>
+          </z-card>
 
-          <app-card header="Acompanhar pedido">
+          <z-card zTitle="Acompanhar pedido">
             <div class="space-y-4">
               @for (step of timelineSteps(); track step.key) {
                 <div class="flex gap-4">
@@ -176,9 +176,9 @@
                 </div>
               }
             </div>
-          </app-card>
+          </z-card>
 
-          <app-card header="Endereco de entrega">
+          <z-card zTitle="Endereco de entrega">
             <p class="font-semibold text-stone-900">
               {{ order()!.deliveryAddress.street }}, {{ order()!.deliveryAddress.number }}
             </p>
@@ -190,10 +190,10 @@
               {{ order()!.deliveryAddress.state }}
             </p>
             <p class="mt-1 text-sm text-stone-500">CEP {{ order()!.deliveryAddress.zipCode }}</p>
-          </app-card>
+          </z-card>
 
           @if (canRate()) {
-            <app-card header="Avaliar pedido">
+            <z-card zTitle="Avaliar pedido">
               <div class="flex gap-2">
                 @for (score of [1, 2, 3, 4, 5]; track score) {
                   <button
@@ -209,7 +209,7 @@
               </div>
 
               <div class="mt-4">
-                <app-textarea
+                <z-textarea
                   label="Comentario"
                   placeholder="Conte como foi sua experiencia..."
                   [ngModel]="ratingComment()"
@@ -219,21 +219,21 @@
               </div>
 
               <div class="mt-4">
-                <app-button (click)="submitRating()">Enviar avaliacao</app-button>
+                <button z-button (click)="submitRating()">Enviar avaliacao</button>
               </div>
-            </app-card>
+            </z-card>
           } @else if (order()!.rating) {
-            <app-card header="Sua avaliacao">
+            <z-card zTitle="Sua avaliacao">
               <p class="text-lg font-semibold text-stone-950">{{ order()!.rating!.score }}/5</p>
               @if (order()!.rating!.comment) {
                 <p class="mt-2 text-sm text-stone-600">{{ order()!.rating!.comment }}</p>
               }
-            </app-card>
+            </z-card>
           }
         </section>
 
         <aside class="space-y-5 xl:sticky xl:top-24 xl:self-start">
-          <app-card header="Resumo financeiro">
+          <z-card zTitle="Resumo financeiro">
             <div class="space-y-3 text-sm">
               <div class="flex justify-between text-stone-600">
                 <span>Subtotal</span>
@@ -252,15 +252,15 @@
                 <span>R$ {{ order()!.total.toFixed(2) }}</span>
               </div>
             </div>
-          </app-card>
+          </z-card>
 
-          <app-card header="Pagamento">
+          <z-card zTitle="Pagamento">
             <p class="text-sm font-semibold text-stone-900">{{ getPaymentMethodLabel() }}</p>
-          </app-card>
+          </z-card>
 
-          <app-card header="Acoes">
-            <app-button [fullWidth]="true" (click)="reorder()">Pedir novamente</app-button>
-          </app-card>
+          <z-card zTitle="Acoes">
+            <button z-button [zFull]="true" (click)="reorder()">Pedir novamente</button>
+          </z-card>
         </aside>
       </div>
     }
