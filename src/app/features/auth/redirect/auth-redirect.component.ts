@@ -9,11 +9,11 @@ import { LoadingComponent } from '@/shared/components';
   imports: [LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
-      <div class="text-center">
+    <div class="app-shell flex items-center justify-center px-4 py-8">
+      <div class="app-surface max-w-md px-8 py-10 text-center">
         <app-loading />
-        <h1 class="text-2xl font-bold mb-4 mt-8">Processando autenticação...</h1>
-        <p class="text-gray-600">Você será redirecionado em um momento.</p>
+        <h1 class="mt-6 text-2xl font-semibold tracking-tight text-stone-950">Processando autenticacao...</h1>
+        <p class="mt-3 text-sm leading-6 text-stone-600">Estamos concluindo seu acesso e redirecionando para o app.</p>
       </div>
     </div>
   `,
@@ -23,20 +23,18 @@ export class AuthRedirectComponent {
   private readonly router = inject(Router);
 
   constructor() {
-    // Redirecionar após autenticação ser processada
     effect(() => {
       const isAuthenticated = this.authService.isAuthenticated();
       const isLoading = this.authService.loading();
 
-      // Aguardar até que o loading termine
       if (!isLoading) {
-        setTimeout(() => {
-          if (isAuthenticated) {
-            this.router.navigate(['/dashboard']);
-          } else {
-            this.router.navigate(['/login']);
-          }
-        }, 1000);
+        const returnUrl = this.authService.consumeReturnUrl() ?? '/dashboard';
+
+        if (isAuthenticated) {
+          this.router.navigateByUrl(returnUrl);
+        } else {
+          this.router.navigate(['/login']);
+        }
       }
     });
   }

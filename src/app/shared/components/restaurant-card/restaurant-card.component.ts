@@ -9,57 +9,68 @@ import { CardComponent, BadgeComponent, ButtonComponent } from '../index';
   imports: [CommonModule, CardComponent, BadgeComponent, ButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-card class="cursor-pointer hover:shadow-lg transition-shadow">
-      <!-- Imagem -->
-      <div class="relative h-48 overflow-hidden bg-gray-200 -mx-4 -mt-4 mb-4">
+    <app-card class="group cursor-pointer">
+      <div class="relative -mx-5 -mt-5 mb-5 overflow-hidden rounded-[24px] sm:-mx-6 sm:-mt-6">
+        <div class="absolute inset-0 z-10 bg-gradient-to-t from-stone-950/55 via-stone-900/5 to-transparent"></div>
         <img
           [src]="restaurant().image"
           [alt]="restaurant().name"
-          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          class="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
         />
 
-        <!-- Status Badge -->
-        <div class="absolute top-3 right-3">
+        <button
+          type="button"
+          (click)="toggleFavorite.emit(); $event.stopPropagation()"
+          class="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/92 text-lg text-stone-700 shadow-lg transition hover:scale-105"
+          [attr.aria-label]="isFavorite() ? 'Remover dos favoritos' : 'Adicionar aos favoritos'"
+        >
+          {{ isFavorite() ? '♥' : '♡' }}
+        </button>
+
+        <div class="absolute left-4 top-4 z-20">
           <app-badge [variant]="restaurant().isOpen ? 'success' : 'danger'" size="md">
             {{ restaurant().isOpen ? 'Aberto' : 'Fechado' }}
           </app-badge>
         </div>
 
-        <!-- Rating Badge -->
         <div
-          class="absolute top-3 left-3 bg-yellow-400 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm font-bold"
+          class="absolute bottom-4 left-4 z-20 inline-flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 text-xs font-semibold text-stone-900 shadow-lg"
         >
-          {{ restaurant().rating }}
+          <span class="text-amber-500">★</span>
+          <span>{{ restaurant().rating }}</span>
+          <span class="text-stone-400">·</span>
+          <span>{{ restaurant().reviewCount }} aval.</span>
         </div>
       </div>
 
-      <!-- Conteúdo -->
       <div>
-        <!-- Nome e Categoria -->
-        <h3 class="font-bold text-lg text-gray-900">{{ restaurant().name }}</h3>
-        <p class="text-sm text-gray-600 mb-2">{{ restaurant().category }}</p>
+        <div class="mb-3 flex items-start justify-between gap-3">
+          <div>
+            <p class="mb-1 text-xs font-semibold uppercase tracking-[0.22em] text-orange-500">
+              {{ restaurant().category }}
+            </p>
+            <h3 class="text-xl font-semibold tracking-tight text-stone-900">{{ restaurant().name }}</h3>
+          </div>
+          <div class="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
+            {{ restaurant().deliveryTime }} min
+          </div>
+        </div>
 
-        <!-- Descrição -->
-        <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+        <p class="mb-5 line-clamp-2 text-sm leading-6 text-stone-600">
           {{ restaurant().description }}
         </p>
 
-        <!-- Footer com entrega e avaliação -->
-        <div class="flex justify-between items-center text-sm text-gray-700 mb-4">
-          <div class="flex gap-4">
-            <div class="flex items-center gap-1">
-              <span>📦</span>
-              <span>{{ restaurant().deliveryTime }}min</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span>💰</span>
-              <span>R$ {{ restaurant().deliveryFee | number: '1.2-2' }}</span>
-            </div>
+        <div class="mb-5 grid grid-cols-2 gap-3 text-sm text-stone-600">
+          <div class="rounded-2xl bg-stone-50 px-3 py-3">
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">Entrega</p>
+            <p class="font-semibold text-stone-900">R$ {{ restaurant().deliveryFee | number: '1.2-2' }}</p>
           </div>
-          <div class="text-xs text-gray-500">{{ restaurant().reviewCount }} avaliações</div>
+          <div class="rounded-2xl bg-stone-50 px-3 py-3">
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">Endereco</p>
+            <p class="truncate font-semibold text-stone-900">{{ restaurant().address }}</p>
+          </div>
         </div>
 
-        <!-- Action Button -->
         <app-button
           variant="primary"
           [fullWidth]="true"
@@ -73,5 +84,7 @@ import { CardComponent, BadgeComponent, ButtonComponent } from '../index';
 })
 export class RestaurantCardComponent {
   restaurant = input.required<Restaurant>();
+  isFavorite = input<boolean>(false);
   selectRestaurant = output<string>();
+  toggleFavorite = output<void>();
 }

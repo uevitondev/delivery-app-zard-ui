@@ -8,7 +8,7 @@ import { AuthService } from '@/shared/core/services/auth.service';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (authService.user()) {
+    @if (authService.isMockMode() && authService.user()) {
       <div
         class="fixed bottom-4 left-4 bg-yellow-100 border-2 border-yellow-400 text-yellow-800 px-3 py-2 rounded-lg text-xs font-semibold shadow-lg z-50"
       >

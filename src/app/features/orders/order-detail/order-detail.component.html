@@ -1,127 +1,268 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Header -->
-  <div class="sticky top-0 z-40 bg-white shadow-sm">
-    <div class="max-w-2xl mx-auto px-4 py-4 flex items-center">
-      <button (click)="goBack()" class="text-2xl hover:text-blue-600 transition-colors mr-4">
-        ←
-      </button>
-      <h1 class="text-2xl font-bold">Detalhes do Pedido</h1>
-    </div>
-  </div>
-
-  <div class="max-w-2xl mx-auto px-4 py-8">
-    <!-- Loading State -->
-    @if (loading()) {
-      <div class="text-center py-12">
-        <div class="inline-block animate-spin">⏳</div>
-        <p class="mt-4 text-gray-600">Carregando...</p>
+<div class="app-shell">
+  <header class="app-topbar">
+    <div class="app-topbar-inner">
+      <div class="flex items-center gap-3">
+        <button
+          (click)="goBack()"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+        >
+          ←
+        </button>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">detalhes</p>
+          <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Pedido</h1>
+        </div>
       </div>
+    </div>
+  </header>
+
+  <main class="app-page py-6">
+    @if (loading()) {
+      <app-loading variant="list" [count]="4" />
     }
 
-    <!-- Error State -->
     @if (error()) {
-      <app-card class="border-red-200 bg-red-50">
-        <div class="p-6 text-center">
-          <p class="text-red-700 font-semibold">{{ error() }}</p>
-          <button (click)="goBack()" class="mt-4 text-blue-600 hover:underline">
-            Voltar para Pedidos
-          </button>
+      <app-card>
+        <div class="py-10 text-center">
+          <p class="text-lg font-semibold text-red-600">{{ error() }}</p>
+          <div class="mt-5 flex justify-center">
+            <button (click)="goBack()" class="text-sm font-semibold text-orange-600">Voltar para pedidos</button>
+          </div>
         </div>
       </app-card>
     }
 
-    <!-- Order Content -->
     @if (order() && !error()) {
-      <div class="space-y-6">
-        <!-- Order Header Card -->
-        <app-card>
-          <div class="p-6 border-b">
-            <div class="flex items-start justify-between mb-4">
+      <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <section class="space-y-5">
+          <app-card>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p class="text-gray-600 text-sm">Pedido #{{ order()!.id }}</p>
-                <h2 class="text-xl font-bold mt-1">
-                  {{ order()!.restaurant?.name || 'Restaurante' }}
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+                  Pedido #{{ order()!.id }}
+                </p>
+                <h2 class="mt-2 text-3xl font-semibold tracking-tight text-stone-950">
+                  {{ order()!.restaurant?.name || 'Seu pedido' }}
                 </h2>
+                <p class="mt-2 text-sm text-stone-600">
+                  {{ order()!.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                </p>
               </div>
-              <app-badge [variant]="getStatusVariant(order()!.status)">
+
+              <app-badge [variant]="getStatusVariant(order()!.status)" size="lg">
                 {{ getStatusLabel(order()!.status) }}
               </app-badge>
             </div>
-            <p class="text-sm text-gray-600">
-              {{ order()!.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-            </p>
-          </div>
+          </app-card>
 
-          <!-- Items -->
-          <div class="p-6 border-b">
-            <h3 class="font-semibold mb-4">Itens do Pedido</h3>
+          @if (trackingStatus(); as tracking) {
+            <app-card>
+              <div class="rounded-[28px] bg-[radial-gradient(circle_at_top_left,rgba(255,237,213,0.9),rgba(255,255,255,0.94)_55%,rgba(255,244,230,0.92))] p-5">
+                <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                  <div class="max-w-xl">
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">rastreamento ao vivo</p>
+                    <h3 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">
+                      {{ tracking.title }}
+                    </h3>
+                    <p class="mt-2 text-sm leading-6 text-stone-600">{{ tracking.copy }}</p>
+                  </div>
+
+                  @if (courierProfile(); as courier) {
+                    <div class="rounded-[24px] border border-white/70 bg-white/80 px-4 py-4 shadow-[0_12px_30px_rgba(118,60,24,0.08)]">
+                      <div class="flex items-center gap-3">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-stone-950 text-sm font-semibold text-white">
+                          {{ courier.initials }}
+                        </div>
+                        <div>
+                          <p class="text-sm font-semibold text-stone-950">{{ courier.name }}</p>
+                          <p class="text-xs uppercase tracking-[0.18em] text-stone-400">{{ courier.vehicle }}</p>
+                        </div>
+                      </div>
+                      <p class="mt-3 text-sm leading-6 text-stone-600">{{ courier.lastUpdate }}</p>
+                      <p class="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">
+                        @if (order()!.status === 'delivered') {
+                          entregue
+                        } @else {
+                          ETA {{ courier.etaMinutes }} min
+                        }
+                      </p>
+                    </div>
+                  }
+                </div>
+
+                <div class="mt-6">
+                  <div class="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+                    <span>progresso da entrega</span>
+                    <span>{{ tracking.progress }}%</span>
+                  </div>
+                  <div class="h-3 overflow-hidden rounded-full bg-white/80">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r transition-all duration-500"
+                      [ngClass]="tracking.accent"
+                      [style.width.%]="tracking.progress"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  @for (stop of routeStops(); track stop.title) {
+                    <div
+                      class="rounded-[22px] border px-4 py-4 transition"
+                      [class.border-orange-200]="stop.active"
+                      [class.bg-white]="stop.active"
+                      [class.border-stone-200]="!stop.active"
+                      [class.bg-white/60]="!stop.active"
+                    >
+                      <div class="flex items-center gap-2">
+                        <span
+                          class="inline-flex h-3 w-3 rounded-full"
+                          [class.bg-orange-500]="stop.active"
+                          [class.bg-stone-300]="!stop.active"
+                        ></span>
+                        <p class="text-sm font-semibold text-stone-950">{{ stop.title }}</p>
+                      </div>
+                      <p class="mt-2 text-sm leading-6 text-stone-600">{{ stop.subtitle }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </app-card>
+          }
+
+          <app-card header="Itens do pedido">
             <div class="space-y-3">
               @for (item of order()!.items; track item.menuItem.id) {
-                <div class="flex justify-between items-start p-3 bg-gray-50 rounded">
-                  <div class="flex-1">
-                    <p class="font-medium">{{ item.menuItem.name }}</p>
-                    <p class="text-sm text-gray-600">Quantidade: {{ item.quantity }}</p>
+                <div class="flex items-start justify-between gap-4 rounded-[24px] bg-stone-50 px-4 py-4">
+                  <div>
+                    <p class="font-semibold text-stone-900">{{ item.menuItem.name }}</p>
+                    <p class="mt-1 text-sm text-stone-500">Quantidade: {{ item.quantity }}</p>
                     @if (item.notes) {
-                      <p class="text-xs text-gray-500 mt-1">Observação: {{ item.notes }}</p>
+                      <p class="mt-2 text-sm text-stone-600">{{ item.notes }}</p>
                     }
                   </div>
-                  <p class="font-semibold text-right">
-                    R$ {{ (item.price * item.quantity).toFixed(2) }}
-                  </p>
+                  <p class="font-semibold text-stone-900">R$ {{ (item.price * item.quantity).toFixed(2) }}</p>
                 </div>
               }
             </div>
-          </div>
+          </app-card>
 
-          <!-- Delivery Address -->
-          <div class="p-6 border-b">
-            <h3 class="font-semibold mb-4">Endereço de Entrega</h3>
-            <p class="text-sm">
+          <app-card header="Acompanhar pedido">
+            <div class="space-y-4">
+              @for (step of timelineSteps(); track step.key) {
+                <div class="flex gap-4">
+                  <div class="flex flex-col items-center">
+                    <span
+                      class="inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold"
+                      [class.bg-orange-500]="step.completed"
+                      [class.text-white]="step.completed"
+                      [class.bg-stone-200]="!step.completed"
+                      [class.text-stone-500]="!step.completed"
+                    >
+                      {{ step.completed ? '✓' : '•' }}
+                    </span>
+                    @if (!$last) {
+                      <span
+                        class="mt-2 h-10 w-0.5"
+                        [class.bg-orange-300]="step.completed"
+                        [class.bg-stone-200]="!step.completed"
+                      ></span>
+                    }
+                  </div>
+
+                  <div class="pb-4">
+                    <p class="font-semibold text-stone-950">{{ step.label }}</p>
+                    <p class="mt-1 text-sm leading-6 text-stone-600">{{ step.copy }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </app-card>
+
+          <app-card header="Endereco de entrega">
+            <p class="font-semibold text-stone-900">
               {{ order()!.deliveryAddress.street }}, {{ order()!.deliveryAddress.number }}
             </p>
             @if (order()!.deliveryAddress.complement) {
-              <p class="text-sm text-gray-600">
-                Complemento: {{ order()!.deliveryAddress.complement }}
-              </p>
+              <p class="mt-2 text-sm text-stone-600">{{ order()!.deliveryAddress.complement }}</p>
             }
-            <p class="text-sm text-gray-600">
+            <p class="mt-2 text-sm text-stone-600">
               {{ order()!.deliveryAddress.neighborhood }}, {{ order()!.deliveryAddress.city }} -
               {{ order()!.deliveryAddress.state }}
             </p>
-            <p class="text-sm text-gray-600">CEP: {{ order()!.deliveryAddress.zipCode }}</p>
-          </div>
+            <p class="mt-1 text-sm text-stone-500">CEP {{ order()!.deliveryAddress.zipCode }}</p>
+          </app-card>
 
-          <!-- Totals -->
-          <div class="p-6">
-            <div class="space-y-2 text-sm">
-              <div class="flex justify-between">
-                <span class="text-gray-600">Subtotal</span>
-                <span>R$ {{ order()!.subtotal.toFixed(2) }}</span>
+          @if (canRate()) {
+            <app-card header="Avaliar pedido">
+              <div class="flex gap-2">
+                @for (score of [1, 2, 3, 4, 5]; track score) {
+                  <button
+                    type="button"
+                    (click)="ratingScore.set(score)"
+                    class="text-2xl transition"
+                    [class.text-amber-500]="score <= ratingScore()"
+                    [class.text-stone-300]="score > ratingScore()"
+                  >
+                    ★
+                  </button>
+                }
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Taxa de Entrega</span>
-                <span>R$ {{ order()!.deliveryFee.toFixed(2) }}</span>
+
+              <div class="mt-4">
+                <app-textarea
+                  label="Comentario"
+                  placeholder="Conte como foi sua experiencia..."
+                  [ngModel]="ratingComment()"
+                  (ngModelChange)="ratingComment.set($event)"
+                  [rows]="4"
+                />
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Impostos</span>
-                <span>R$ {{ order()!.tax.toFixed(2) }}</span>
+
+              <div class="mt-4">
+                <app-button (click)="submitRating()">Enviar avaliacao</app-button>
               </div>
-              <div class="flex justify-between text-base font-bold border-t pt-2">
+            </app-card>
+          } @else if (order()!.rating) {
+            <app-card header="Sua avaliacao">
+              <p class="text-lg font-semibold text-stone-950">{{ order()!.rating!.score }}/5</p>
+              @if (order()!.rating!.comment) {
+                <p class="mt-2 text-sm text-stone-600">{{ order()!.rating!.comment }}</p>
+              }
+            </app-card>
+          }
+        </section>
+
+        <aside class="space-y-5 xl:sticky xl:top-24 xl:self-start">
+          <app-card header="Resumo financeiro">
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between text-stone-600">
+                <span>Subtotal</span>
+                <span class="font-semibold text-stone-900">R$ {{ order()!.subtotal.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-stone-600">
+                <span>Entrega</span>
+                <span class="font-semibold text-stone-900">R$ {{ order()!.deliveryFee.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-stone-600">
+                <span>Impostos</span>
+                <span class="font-semibold text-stone-900">R$ {{ order()!.tax.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between border-t border-stone-100 pt-3 text-base font-semibold text-stone-950">
                 <span>Total</span>
                 <span>R$ {{ order()!.total.toFixed(2) }}</span>
               </div>
             </div>
-          </div>
-        </app-card>
+          </app-card>
 
-        <!-- Payment Info -->
-        <app-card>
-          <div class="p-6">
-            <h3 class="font-semibold mb-4">Forma de Pagamento</h3>
-            <p class="text-sm">{{ order()!.paymentMethod.type }}</p>
-          </div>
-        </app-card>
+          <app-card header="Pagamento">
+            <p class="text-sm font-semibold text-stone-900">{{ getPaymentMethodLabel() }}</p>
+          </app-card>
+
+          <app-card header="Acoes">
+            <app-button [fullWidth]="true" (click)="reorder()">Pedir novamente</app-button>
+          </app-card>
+        </aside>
       </div>
     }
-  </div>
+  </main>
 </div>

@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { DevBadgeComponent } from '@/shared/components';
+import { DevBadgeComponent, ToastHostComponent } from '@/shared/components';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DevBadgeComponent],
+  imports: [RouterOutlet, DevBadgeComponent, ToastHostComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

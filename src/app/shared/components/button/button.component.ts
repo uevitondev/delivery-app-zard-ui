@@ -6,6 +6,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'inline-flex',
+  },
   template: `
     <button
       [attr.type]="type()"
@@ -27,21 +30,23 @@ export class ButtonComponent {
 
   buttonClasses() {
     const baseClasses =
-      'inline-flex items-center justify-center font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+      'inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-tight transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-55';
 
     const variantClasses = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 focus:ring-blue-500',
+      primary:
+        'bg-[linear-gradient(135deg,#ff7a3d_0%,#ff5a36_100%)] text-white shadow-[0_14px_30px_rgba(255,107,53,0.26)] hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(255,107,53,0.34)]',
       secondary:
-        'bg-gray-200 text-gray-900 hover:bg-gray-300 disabled:bg-gray-400 focus:ring-gray-500',
-      danger: 'bg-red-600 text-white hover:bg-red-700 disabled:bg-gray-400 focus:ring-red-500',
+        'border border-stone-200 bg-white/88 text-stone-800 shadow-[0_8px_22px_rgba(120,70,34,0.08)] hover:-translate-y-0.5 hover:bg-stone-50',
+      danger:
+        'bg-[linear-gradient(135deg,#ef4444_0%,#dc2626_100%)] text-white shadow-[0_14px_28px_rgba(220,38,38,0.22)] hover:-translate-y-0.5',
       ghost:
-        'bg-transparent text-gray-900 hover:bg-gray-100 disabled:text-gray-400 focus:ring-gray-500',
+        'bg-transparent text-stone-700 hover:bg-white/70 hover:text-stone-950',
     };
 
     const sizeClasses = {
-      sm: 'px-3 py-1 text-sm',
-      md: 'px-4 py-2 text-base',
-      lg: 'px-6 py-3 text-lg',
+      sm: 'min-h-10 px-4 text-sm',
+      md: 'min-h-12 px-5 text-sm sm:text-[15px]',
+      lg: 'min-h-14 px-6 text-base',
     };
 
     const widthClass = this.fullWidth() ? 'w-full' : '';

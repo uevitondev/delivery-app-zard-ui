@@ -1,17 +1,21 @@
-import { Injectable, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = async (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Usar a computed signal diretamente
+  await authService.whenReady();
+
   if (authService.isAuthenticated()) {
     return true;
   }
 
-  // Redirecionar para login se não autenticado
-  authService.login();
-  return false;
+  authService.setReturnUrl(state.url);
+  return router.createUrlTree(['/login'], {
+    queryParams: {
+      redirectTo: state.url,
+    },
+  });
 };

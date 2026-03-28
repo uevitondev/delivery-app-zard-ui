@@ -1,59 +1,40 @@
-# DeliveryappZardui
+# Deliveryapp Zard UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Aplicação Angular de delivery com fluxo de autenticação, listagem de restaurantes, carrinho e pedidos.
 
-## Development server
-
-To start a local development server, run:
+## Scripts
 
 ```bash
-ng serve
+npm start
+npm run build
+npm test
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Autenticação
 
-## Code scaffolding
+O projeto usa configuração centralizada em `src/environments/environment*.ts`.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Em desenvolvimento, `auth.useMock` vem como `true`, então o app sobe já autenticado com um usuário fake.
+- Em produção, `auth.useMock` é `false` e o app usa o fluxo OIDC com Keycloak.
+- `clientSecret` não deve existir no frontend. Para SPA, configure um cliente público no provedor de identidade.
 
-```bash
-ng generate component component-name
-```
+## Fluxos mockados
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Enquanto a API não estiver conectada, alguns serviços seguem em memória:
 
-```bash
-ng generate --help
-```
+- pedidos são persistidos apenas no estado da sessão atual da aplicação
+- restaurantes e cardápios usam dados mockados
+- carrinho e endereços também são mantidos localmente
 
-## Building
+## Estrutura
 
-To build the project run:
+- `src/app/features`: telas e fluxos principais
+- `src/app/shared/components`: componentes reutilizáveis
+- `src/app/shared/core`: serviços, guardas, interceptors e providers
+- `src/app/shared/models`: contratos de domínio
 
-```bash
-ng build
-```
+## Observações
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- O callback de autenticação usa a rota `/auth-redirect`.
+- O build de produção usa `src/environments/environment.production.ts` via file replacement.
+- Os testes atuais cobrem o bootstrap básico da aplicação e podem ser expandidos conforme os fluxos forem sendo integrados à API.

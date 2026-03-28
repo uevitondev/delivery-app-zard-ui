@@ -38,7 +38,7 @@ export interface CartItem {
 
 export interface Cart {
   restaurantId: string;
-  restaurants?: Restaurant;
+  restaurant?: Restaurant;
   items: CartItem[];
   subtotal: number;
   deliveryFee: number;
@@ -74,12 +74,14 @@ export interface Order {
   subtotal: number;
   deliveryFee: number;
   tax: number;
+  discount?: number;
   total: number;
   deliveryAddress: Address;
   createdAt: Date;
   estimatedDelivery?: Date;
   actualDelivery?: Date;
   paymentMethod: PaymentMethod;
+  couponCode?: string;
   notes?: string;
   rating?: OrderRating;
 }
@@ -104,12 +106,14 @@ export enum PaymentMethodType {
   CREDIT_CARD = 'credit_card',
   DEBIT_CARD = 'debit_card',
   PIX = 'pix',
+  CASH = 'cash',
   WALLET = 'wallet',
 }
 
 export interface PaymentMethod {
   id: string;
   type: PaymentMethodType;
+  label?: string;
   lastDigits?: string;
   isDefault: boolean;
 }
@@ -130,9 +134,36 @@ export interface UserProfile {
   name: string;
   phone: string;
   image?: string;
+  hasCompletedOnboarding: boolean;
+  preferredCuisine?: string;
   defaultAddress?: Address;
   addresses: Address[];
   paymentMethods: PaymentMethod[];
   favoriteRestaurants: string[]; // IDs
+  favoriteMenuItems: string[]; // IDs
+  savedCouponCodes: string[];
+  recentSearches: string[];
   createdAt: Date;
+}
+
+export enum CouponType {
+  PERCENTAGE = 'percentage',
+  FIXED = 'fixed',
+  FREE_DELIVERY = 'free_delivery',
+}
+
+export interface Coupon {
+  code: string;
+  title: string;
+  description: string;
+  type: CouponType;
+  value: number;
+  minSubtotal?: number;
+  restaurantId?: string;
+}
+
+export interface AppliedCoupon {
+  code: string;
+  title: string;
+  discount: number;
 }

@@ -7,6 +7,7 @@ export * from './textarea/textarea.component';
 export * from './select/select.component';
 export * from './modal/modal.component';
 export * from './toast/toast.component';
+export * from './toast/toast-host.component';
 export * from './quantity-picker/quantity-picker.component';
 
 // App Components

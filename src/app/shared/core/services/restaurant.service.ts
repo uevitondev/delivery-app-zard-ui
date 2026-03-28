@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Restaurant, MenuItem } from '@/shared/models';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject } from 'rxjs';
+import { RestaurantCatalogPort } from '../contracts/app.contracts';
 
 @Injectable({
   providedIn: 'root',
 })
-export class RestaurantService {
+export class RestaurantService implements RestaurantCatalogPort {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = '/api/restaurants'; // Ajustar com sua URL real
 
@@ -168,6 +169,10 @@ export class RestaurantService {
 
   getMenuItems(restaurantId: string): MenuItem[] {
     return this.mockMenuItems[restaurantId] || [];
+  }
+
+  getAllMenuItems(): MenuItem[] {
+    return Object.values(this.mockMenuItems).flat();
   }
 
   getMenuItem(restaurantId: string, itemId: string): MenuItem | undefined {

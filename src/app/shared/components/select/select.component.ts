@@ -12,6 +12,9 @@ export interface SelectOption {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'block',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -22,7 +25,7 @@ export interface SelectOption {
   template: `
     <div class="w-full">
       @if (label()) {
-        <label class="block text-sm font-semibold text-gray-900 mb-2">
+        <label class="mb-2 block text-sm font-semibold tracking-tight text-stone-800">
           {{ label() }}
         </label>
       }
@@ -33,7 +36,7 @@ export interface SelectOption {
         [value]="value"
         (change)="onSelectionChange($event)"
         (blur)="onBlur()"
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 disabled:bg-gray-100 disabled:text-gray-500"
+        class="w-full rounded-[22px] border border-stone-200 bg-white/88 px-4 py-3 text-sm text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-100 disabled:bg-stone-100 disabled:text-stone-400"
       >
         @if (placeholder()) {
           <option value="">{{ placeholder() }}</option>
@@ -45,7 +48,7 @@ export interface SelectOption {
       </select>
 
       @if (error()) {
-        <p class="text-red-600 text-sm mt-1">{{ error() }}</p>
+        <p class="mt-2 text-sm text-red-600">{{ error() }}</p>
       }
     </div>
   `,

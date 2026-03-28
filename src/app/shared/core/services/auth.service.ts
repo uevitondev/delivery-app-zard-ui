@@ -1,15 +1,8 @@
-import { Injectable, inject, effect, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { environment } from '../../../../environments/environment';
 
-// 🔧 MODO DE DESENVOLVIMENTO: Altere para false para usar autenticação real via Keycloak
-const USE_MOCK_AUTH = true;
-
-const MOCK_USER: AuthUser = {
-  sub: '550e8400-e29b-41d4-a716-446655440000',
-  email: 'demo@deliveryapp.com',
-  name: 'Demo User',
-  preferred_username: 'demo_user',
-};
+const RETURN_URL_STORAGE_KEY = 'deliveryapp.returnUrl';
 
 export interface AuthUser {
   sub: string;
@@ -22,7 +15,8 @@ export interface AuthUser {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly oauthService = inject(OAuthService);
+  private readonly oauthService = inject(OAuthService, { optional: true });
+  private readonly initializationPromise: Promise<void>;
 
   // Signals para state
   private readonly isAuthenticatedSignal = signal<boolean>(false);
@@ -33,34 +27,39 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this.isAuthenticatedSignal());
   readonly user = computed(() => this.userSignal());
   readonly loading = computed(() => this.loadingSignal());
+  readonly isMockMode = computed(() => environment.auth.useMock);
 
   // Derived computed signal
   readonly username = computed(() => this.user()?.preferred_username ?? '');
 
   constructor() {
-    this.initializeAuth();
+    this.initializationPromise = this.initializeAuth();
   }
 
   private async initializeAuth() {
-    // 🔧 Modo Mock - Autenticação para desenvolvimento
-    if (USE_MOCK_AUTH) {
-      console.log('🔧 MODO DE DESENVOLVIMENTO: Usando autenticação mock');
+    if (this.isMockMode()) {
       this.isAuthenticatedSignal.set(true);
-      this.userSignal.set(MOCK_USER);
+      this.userSignal.set(environment.auth.mockUser);
+      this.loadingSignal.set(false);
+      return;
+    }
+
+    if (!this.oauthService) {
+      console.error('OAuthService não foi fornecido para o modo de autenticação real.');
       this.loadingSignal.set(false);
       return;
     }
 
     // Configurar OIDC (Modo Real)
     this.oauthService.configure({
-      clientId: 'deliveryapp-client',
-      redirectUri: window.location.origin,
+      clientId: environment.auth.clientId,
+      redirectUri: `${window.location.origin}/auth-redirect`,
       silentRefreshRedirectUri: `${window.location.origin}/silent-refresh.html`,
-      scope: 'openid profile email',
-      issuer: 'http://localhost:8080/realms/deliveryapp', // URL do Keycloak
-      strictDiscoveryDocumentValidation: false,
-      sessionChecksEnabled: true,
-      showDebugInformation: true,
+      scope: environment.auth.scope,
+      issuer: environment.auth.issuer,
+      strictDiscoveryDocumentValidation: environment.auth.strictDiscoveryDocumentValidation,
+      sessionChecksEnabled: environment.auth.sessionChecksEnabled,
+      showDebugInformation: environment.auth.showDebugInformation,
     });
 
     try {
@@ -80,7 +79,7 @@ export class AuthService {
       }
 
       if (event.type === 'token_expires') {
-        this.oauthService.silentRefresh();
+        this.oauthService?.silentRefresh();
       }
 
       if (event.type === 'logout') {
@@ -90,11 +89,19 @@ export class AuthService {
   }
 
   private async tryLogin() {
+    if (!this.oauthService) {
+      return;
+    }
+
     if (this.oauthService.hasValidAccessToken()) {
       this.updateAuthState();
     } else {
-      const hasHashFragment = window.location.hash.length > 0;
-      if (hasHashFragment) {
+      const hasOAuthResponse =
+        window.location.search.includes('code=') ||
+        window.location.search.includes('state=') ||
+        window.location.hash.length > 0;
+
+      if (hasOAuthResponse) {
         try {
           await this.oauthService.tryLogin();
           this.updateAuthState();
@@ -107,6 +114,12 @@ export class AuthService {
   }
 
   private updateAuthState() {
+    if (!this.oauthService) {
+      this.isAuthenticatedSignal.set(false);
+      this.userSignal.set(null);
+      return;
+    }
+
     const isAuthenticated = this.oauthService.hasValidAccessToken();
     this.isAuthenticatedSignal.set(isAuthenticated);
 
@@ -118,33 +131,60 @@ export class AuthService {
     }
   }
 
-  login() {
-    if (USE_MOCK_AUTH) {
-      // No modo mock, login é instantâneo
+  async whenReady() {
+    await this.initializationPromise;
+  }
+
+  login(returnUrl?: string) {
+    if (returnUrl) {
+      this.setReturnUrl(returnUrl);
+    }
+
+    if (this.isMockMode()) {
       this.isAuthenticatedSignal.set(true);
-      this.userSignal.set(MOCK_USER);
+      this.userSignal.set(environment.auth.mockUser);
       return;
     }
+
+    if (!this.oauthService) {
+      console.error('OAuthService indisponível para iniciar login.');
+      return;
+    }
+
     this.oauthService.initCodeFlow();
   }
 
   logout() {
-    if (USE_MOCK_AUTH) {
-      // No modo mock, apenas limpa os dados locais
+    if (this.isMockMode()) {
       this.isAuthenticatedSignal.set(false);
       this.userSignal.set(null);
       return;
     }
+
+    if (!this.oauthService) {
+      return;
+    }
+
     this.oauthService.logOut();
     this.isAuthenticatedSignal.set(false);
     this.userSignal.set(null);
   }
 
   getAccessToken(): string | null {
-    if (USE_MOCK_AUTH) {
-      // Retorna um token fake para desenvolvimento
-      return 'mock-token-' + Date.now();
+    if (this.isMockMode()) {
+      return 'mock-token';
     }
-    return this.oauthService.getAccessToken();
+
+    return this.oauthService?.getAccessToken() || null;
+  }
+
+  setReturnUrl(url: string) {
+    sessionStorage.setItem(RETURN_URL_STORAGE_KEY, url);
+  }
+
+  consumeReturnUrl() {
+    const url = sessionStorage.getItem(RETURN_URL_STORAGE_KEY);
+    sessionStorage.removeItem(RETURN_URL_STORAGE_KEY);
+    return url;
   }
 }

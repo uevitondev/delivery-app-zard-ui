@@ -65,11 +65,53 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/profile/profile.component').then((m) => m.ProfileComponent),
   },
+  {
+    path: 'favorites',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/favorites/favorites.component').then((m) => m.FavoritesComponent),
+  },
+  {
+    path: 'favorite-items',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/favorite-items/favorite-items.component').then(
+        (m) => m.FavoriteItemsComponent,
+      ),
+  },
+  {
+    path: 'collections',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/collections/collections.component').then((m) => m.CollectionsComponent),
+  },
+  {
+    path: 'offers',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/offers/offers.component').then((m) => m.OffersComponent),
+  },
+  {
+    path: 'wallet',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/wallet/wallet.component').then((m) => m.WalletComponent),
+  },
+  {
+    path: 'notifications',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/notifications/notifications.component').then(
+        (m) => m.NotificationsComponent,
+      ),
+  },
 
   // Redirecionar para home por padrão
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: 'home',
   },
 ];

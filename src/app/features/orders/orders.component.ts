@@ -1,89 +1,95 @@
-import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location, CommonModule } from '@angular/common';
-import { OrderService } from '@/shared/core/services/order.service';
-import { CardComponent, ButtonComponent, BadgeComponent } from '@/shared/components';
+import { BadgeComponent, ButtonComponent, CardComponent, LoadingComponent } from '@/shared/components';
+import { OrderStatus } from '@/shared/models';
+import { OrdersFacade } from './orders.facade';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, CardComponent, ButtonComponent, BadgeComponent],
+  imports: [CommonModule, CardComponent, ButtonComponent, BadgeComponent, LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen bg-gray-50">
-      <!-- Header -->
-      <div class="sticky top-0 z-40 bg-white shadow-sm">
-        <div class="max-w-3xl mx-auto px-4 py-4 flex items-center">
-          <button (click)="goBack()" class="text-2xl hover:text-blue-600 transition-colors mr-4">
-            ←
-          </button>
-          <h1 class="text-2xl font-bold text-gray-900">Meus Pedidos</h1>
+    <div class="app-shell">
+      <header class="app-topbar">
+        <div class="app-topbar-inner">
+          <div class="flex items-center gap-3">
+            <button
+              (click)="goBack()"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+            >
+              ←
+            </button>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">historico</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Meus pedidos</h1>
+            </div>
+          </div>
+          <app-badge variant="info" size="md">{{ orders().length }} pedidos</app-badge>
         </div>
-      </div>
+      </header>
 
-      <div class="max-w-3xl mx-auto px-4 py-8">
-        @if (orders().length === 0) {
+      <main class="app-page py-6">
+        @if (loading()) {
+          <app-loading variant="list" [count]="4" />
+        } @else if (orders().length === 0) {
           <app-card>
-            <div class="text-center py-8">
-              <p class="text-4xl mb-4">📦</p>
-              <p class="text-gray-600 text-lg mb-6">Você ainda não fez nenhum pedido</p>
-              <app-button variant="primary" size="lg" [fullWidth]="true" (click)="goHome()">
-                Voltar à loja
-              </app-button>
+            <div class="py-14 text-center">
+              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-stone-400">sem historico</p>
+              <h2 class="mt-3 text-3xl font-semibold tracking-tight text-stone-950">Voce ainda nao fez pedidos</h2>
+              <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-stone-600">
+                Explore a vitrine, monte seu carrinho e acompanhe tudo por aqui.
+              </p>
+              <div class="mt-6 flex justify-center">
+                <app-button size="lg" (click)="goHome()">Voltar a loja</app-button>
+              </div>
             </div>
           </app-card>
         } @else {
-          <div class="space-y-4">
+          <div class="grid gap-4">
             @for (order of orders(); track order.id) {
               <app-card>
-                <div class="flex items-start justify-between">
-                  <div class="flex-1">
-                    <!-- Header -->
-                    <div class="flex items-center gap-3 mb-3">
-                      <span class="text-2xl">📦</span>
-                      <div>
-                        <h3 class="font-bold text-gray-900">Pedido #{{ order.id.slice(-6) }}</h3>
-                        <p class="text-sm text-gray-600">
-                          {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Items -->
-                    <div class="mb-3 text-sm text-gray-600">
-                      @for (item of order.items; track item.menuItem.id) {
-                        <p>{{ item.menuItem.name }} (x{{ item.quantity }})</p>
-                      }
-                    </div>
-
-                    <!-- Status -->
-                    <div class="flex items-center gap-2 mb-3">
-                      <app-badge [variant]="getStatusVariant(order.status)" size="sm">
+                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-3">
+                      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+                        Pedido #{{ order.id.slice(-6) }}
+                      </p>
+                      <app-badge [variant]="getStatusVariant(order.status)" size="md">
                         {{ getStatusLabel(order.status) }}
                       </app-badge>
                     </div>
 
-                    <!-- Valores -->
-                    <div class="flex items-center gap-4 text-sm">
-                      <span class="text-gray-600">
-                        Subtotal: R$ {{ order.subtotal | number: '1.2-2' }}
-                      </span>
-                      <span class="text-gray-600">
-                        Entrega: R$ {{ order.deliveryFee | number: '1.2-2' }}
-                      </span>
+                    <p class="mt-3 text-xl font-semibold tracking-tight text-stone-950">
+                      {{ order.restaurant?.name || 'Pedido em andamento' }}
+                    </p>
+                    <p class="mt-1 text-sm text-stone-500">
+                      {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                    </p>
+
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      @for (item of order.items; track item.menuItem.id) {
+                        <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
+                          {{ item.quantity }}x {{ item.menuItem.name }}
+                        </span>
+                      }
                     </div>
                   </div>
 
-                  <!-- Total e Ação -->
-                  <div class="flex flex-col items-end gap-3 ml-4">
-                    <div class="text-right">
-                      <p class="text-sm text-gray-600">Total</p>
-                      <p class="text-xl font-bold text-blue-600">
-                        R$ {{ order.total | number: '1.2-2' }}
-                      </p>
+                  <div class="flex flex-col gap-4 rounded-[24px] bg-stone-50 px-5 py-4 lg:min-w-64">
+                    <div class="flex items-end justify-between gap-4">
+                      <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">total</p>
+                        <p class="text-2xl font-semibold tracking-tight text-stone-950">
+                          R$ {{ order.total | number: '1.2-2' }}
+                        </p>
+                      </div>
+                      <p class="text-sm text-stone-500">{{ order.items.length }} itens</p>
                     </div>
-                    <app-button variant="secondary" size="sm" (click)="viewOrderDetail(order.id)">
-                      Ver Detalhes
+
+                    <app-button variant="secondary" [fullWidth]="true" (click)="viewOrderDetail(order.id)">
+                      Ver detalhes
                     </app-button>
                   </div>
                 </div>
@@ -91,16 +97,20 @@ import { CardComponent, ButtonComponent, BadgeComponent } from '@/shared/compone
             }
           </div>
         }
-      </div>
+      </main>
     </div>
   `,
 })
-export class OrdersComponent {
+export class OrdersComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
-  private readonly orderService = inject(OrderService);
+  readonly facade = inject(OrdersFacade);
+  readonly loading = this.facade.loading;
+  readonly orders = this.facade.orders;
 
-  orders = computed(() => this.orderService.orders());
+  async ngOnInit() {
+    await this.facade.loadOrders();
+  }
 
   goBack() {
     this.location.back();
@@ -114,26 +124,28 @@ export class OrdersComponent {
     this.router.navigate(['/orders', orderId]);
   }
 
-  getStatusLabel(status: string): string {
+  getStatusLabel(status: string) {
     const labels: Record<string, string> = {
-      pending: '⏳ Pendente',
-      confirmed: '✅ Confirmado',
-      preparing: '👨‍🍳 Preparando',
-      on_the_way: '🚗 A Caminho',
-      delivered: '🎉 Entregue',
-      cancelled: '❌ Cancelado',
+      [OrderStatus.PENDING]: 'Pendente',
+      [OrderStatus.CONFIRMED]: 'Confirmado',
+      [OrderStatus.PREPARING]: 'Preparando',
+      [OrderStatus.READY]: 'Pronto',
+      [OrderStatus.OUT_FOR_DELIVERY]: 'A caminho',
+      [OrderStatus.DELIVERED]: 'Entregue',
+      [OrderStatus.CANCELLED]: 'Cancelado',
     };
     return labels[status] || status;
   }
 
   getStatusVariant(status: string): 'default' | 'success' | 'warning' | 'danger' | 'info' {
     const variants: Record<string, 'default' | 'success' | 'warning' | 'danger' | 'info'> = {
-      pending: 'warning',
-      confirmed: 'info',
-      preparing: 'info',
-      on_the_way: 'info',
-      delivered: 'success',
-      cancelled: 'danger',
+      [OrderStatus.PENDING]: 'warning',
+      [OrderStatus.CONFIRMED]: 'info',
+      [OrderStatus.PREPARING]: 'info',
+      [OrderStatus.READY]: 'success',
+      [OrderStatus.OUT_FOR_DELIVERY]: 'info',
+      [OrderStatus.DELIVERED]: 'success',
+      [OrderStatus.CANCELLED]: 'danger',
     };
     return variants[status] || 'default';
   }

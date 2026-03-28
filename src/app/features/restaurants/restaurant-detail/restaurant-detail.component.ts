@@ -1,189 +1,245 @@
+import { CommonModule, Location } from '@angular/common';
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
   inject,
   signal,
-  computed,
-  OnInit,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RestaurantService } from '@/shared/core/services/restaurant.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  BadgeComponent,
+  ButtonComponent,
+  CardComponent,
+  LoadingComponent,
+  MenuItemCardComponent,
+  TextareaComponent,
+} from '@/shared/components';
 import { CartService } from '@/shared/core/services/cart.service';
+import { ProfileService } from '@/shared/core/services/profile.service';
+import { PromotionService } from '@/shared/core/services/promotion.service';
+import { RestaurantService } from '@/shared/core/services/restaurant.service';
+import { ToastService } from '@/shared/core/services/toast.service';
 import { MenuItem } from '@/shared/models';
-import { MenuItemCardComponent, LoadingComponent } from '@/shared/components';
 
 @Component({
   selector: 'app-restaurant-detail',
   standalone: true,
-  imports: [CommonModule, MenuItemCardComponent, LoadingComponent, FormsModule],
+  imports: [
+    CommonModule,
+    MenuItemCardComponent,
+    LoadingComponent,
+    FormsModule,
+    BadgeComponent,
+    ButtonComponent,
+    CardComponent,
+    TextareaComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen bg-gray-50">
-      <!-- Header com voltar -->
-      <div class="sticky top-0 z-40 bg-white shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button (click)="goBack()" class="text-2xl hover:text-blue-600 transition-colors">
-            ← Voltar
+    <div class="app-shell">
+      <header class="app-topbar">
+        <div class="app-topbar-inner">
+          <button
+            (click)="goBack()"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+          >
+            ←
           </button>
 
           <button
             (click)="goToCart()"
-            class="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
+            class="relative inline-flex h-12 items-center rounded-full border border-white/70 bg-white/80 px-4 text-sm font-semibold text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
           >
-            <span class="text-2xl">🛒</span>
+            Carrinho
             @if (cartService.itemCount() > 0) {
-              <span
-                class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
-              >
+              <span class="ml-2 inline-flex min-h-6 min-w-6 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
                 {{ cartService.itemCount() }}
               </span>
             }
           </button>
         </div>
-      </div>
+      </header>
 
       @if (!restaurant()) {
         <app-loading />
       } @else {
-        <!-- Restaurant Hero -->
-        <div class="bg-white">
-          <div class="max-w-6xl mx-auto">
-            <!-- Imagem do restaurante -->
-            <div class="h-64 overflow-hidden">
+        <main class="app-page py-6">
+          <section class="app-surface overflow-hidden">
+            <div class="relative h-72 overflow-hidden sm:h-[22rem]">
+              <div class="absolute inset-0 z-10 bg-gradient-to-t from-stone-950/70 via-stone-900/10 to-transparent"></div>
               <img
                 [src]="restaurant()!.image"
                 [alt]="restaurant()!.name"
-                class="w-full h-full object-cover"
+                class="h-full w-full object-cover"
               />
             </div>
 
-            <!-- Info do restaurante -->
-            <div class="px-4 py-6 border-b">
-              <h1 class="text-3xl font-bold text-gray-900 mb-2">
-                {{ restaurant()!.name }}
-              </h1>
-              <p class="text-gray-600 mb-4">{{ restaurant()!.description }}</p>
-
-              <div class="flex gap-6 text-sm text-gray-700">
+            <div class="px-5 py-6 sm:px-8">
+              <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  ⭐ {{ restaurant()!.rating }} ({{ restaurant()!.reviewCount }} avaliações)
+                  <div class="mb-3 flex flex-wrap gap-2">
+                    <app-badge [variant]="restaurant()!.isOpen ? 'success' : 'danger'" size="md">
+                      {{ restaurant()!.isOpen ? 'Aberto agora' : 'Fechado' }}
+                    </app-badge>
+                    <app-badge variant="info" size="md">{{ restaurant()!.category }}</app-badge>
+                    <app-button variant="secondary" size="sm" (click)="toggleFavorite()">
+                      {{ isFavorite() ? 'Favorito' : 'Salvar' }}
+                    </app-button>
+                  </div>
+
+                  <h1 class="text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
+                    {{ restaurant()!.name }}
+                  </h1>
+                  <p class="mt-3 max-w-3xl text-sm leading-6 text-stone-600 sm:text-base">
+                    {{ restaurant()!.description }}
+                  </p>
                 </div>
-                <div>📦 {{ restaurant()!.deliveryTime }}min de entrega</div>
-                <div>💰 R$ {{ restaurant()!.deliveryFee | number: '1.2-2' }} taxa</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Menu Items -->
-        <div class="max-w-6xl mx-auto px-4 py-8">
-          @if (menuItems().length === 0) {
-            <div class="text-center py-12">
-              <p class="text-gray-600">Menu vazio no momento</p>
-            </div>
-          } @else {
-            <div class="space-y-6">
-              @for (category of categories(); track category) {
-                <div>
-                  <h2 class="text-xl font-bold text-gray-900 mb-4">
-                    {{ category }}
-                  </h2>
-
-                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @for (item of itemsByCategory(category); track item.id) {
-                      <app-menu-item-card [item]="item" (addToCart)="addToCart(item)" />
-                    }
+                <div class="grid gap-3 sm:grid-cols-3">
+                  <div class="rounded-[24px] bg-stone-50 px-4 py-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">avaliacao</p>
+                    <p class="mt-2 text-2xl font-semibold text-stone-950">{{ restaurant()!.rating }}</p>
+                  </div>
+                  <div class="rounded-[24px] bg-stone-50 px-4 py-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">entrega</p>
+                    <p class="mt-2 text-2xl font-semibold text-stone-950">{{ restaurant()!.deliveryTime }} min</p>
+                  </div>
+                  <div class="rounded-[24px] bg-stone-50 px-4 py-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">taxa</p>
+                    <p class="mt-2 text-2xl font-semibold text-stone-950">R$ {{ restaurant()!.deliveryFee | number: '1.2-2' }}</p>
                   </div>
                 </div>
-              }
+              </div>
             </div>
-          }
-        </div>
+          </section>
 
-        <!-- Modal de quantidade -->
-        @if (selectedItem() && showQuantityModal()) {
-          <div
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50"
-            (click)="closeModal()"
-          >
-            <div
-              class="bg-white w-full rounded-t-lg p-6 animate-slide-up"
-              (click)="$event.stopPropagation()"
-            >
-              <h3 class="text-lg font-bold mb-2">{{ selectedItem()!.name }}</h3>
-              <p class="text-gray-600 mb-4">{{ selectedItem()!.description }}</p>
-
-              <div class="mb-4">
-                <p class="font-bold text-lg">R$ {{ selectedItem()!.price | number: '1.2-2' }}</p>
-              </div>
-
-              <!-- Quantidade -->
-              <div class="mb-6">
-                <label class="block text-sm font-semibold mb-2">Quantidade</label>
-                <div class="flex items-center gap-4">
-                  <button (click)="decreaseQuantity()" class="bg-gray-200 px-3 py-2 rounded-lg">
-                    −
-                  </button>
-                  <span class="text-lg font-bold w-8 text-center">
-                    {{ quantity() }}
-                  </span>
-                  <button (click)="increaseQuantity()" class="bg-gray-200 px-3 py-2 rounded-lg">
-                    +
-                  </button>
+          <section class="mt-6 grid gap-4 lg:grid-cols-2">
+            @for (coupon of restaurantCoupons(); track coupon.code) {
+              <app-card>
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">
+                      Cupom {{ coupon.code }}
+                    </p>
+                    <h3 class="mt-2 text-xl font-semibold tracking-tight text-stone-950">{{ coupon.title }}</h3>
+                    <p class="mt-2 text-sm leading-6 text-stone-600">{{ coupon.description }}</p>
+                  </div>
+                  <app-button
+                    size="sm"
+                    [variant]="profileService.isCouponSaved(coupon.code) ? 'secondary' : 'primary'"
+                    (click)="toggleSavedCoupon(coupon.code)"
+                  >
+                    {{ profileService.isCouponSaved(coupon.code) ? 'Salvo' : 'Salvar' }}
+                  </app-button>
                 </div>
-              </div>
+              </app-card>
+            }
+          </section>
 
-              <!-- Notas -->
-              <div class="mb-6">
-                <label class="block text-sm font-semibold mb-2">Notas (opcional)</label>
-                <textarea
-                  [ngModel]="notes()"
-                  (ngModelChange)="notes.set($event)"
-                  placeholder="Ex: Sem cebola, sem molho..."
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
-                  rows="3"
-                ></textarea>
-              </div>
+          <section class="mt-6">
+            @if (menuItems().length === 0) {
+              <app-card>
+                <div class="py-10 text-center">
+                  <p class="text-lg font-semibold text-stone-900">Menu vazio no momento</p>
+                </div>
+              </app-card>
+            } @else {
+              <div class="space-y-8">
+                @for (category of categories(); track category) {
+                  <div>
+                    <div class="mb-4 flex items-center justify-between">
+                      <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">categoria</p>
+                        <h2 class="text-2xl font-semibold tracking-tight text-stone-950">{{ category }}</h2>
+                      </div>
+                    </div>
 
-              <!-- Botões de ação -->
-              <div class="flex gap-4">
-                <button
-                  (click)="closeModal()"
-                  class="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-900 font-semibold hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  (click)="confirmAddToCart()"
-                  class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  Adicionar ao carrinho
-                </button>
+                    <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                      @for (item of itemsByCategory(category); track item.id) {
+                        <app-menu-item-card
+                          [item]="item"
+                          [isFavorite]="profileService.isFavoriteMenuItem(item.id)"
+                          (addToCart)="addToCart(item)"
+                          (toggleFavorite)="toggleFavoriteItem(item)"
+                        />
+                      }
+                    </div>
+                  </div>
+                }
               </div>
+            }
+          </section>
+        </main>
+
+        @if (selectedItem() && showQuantityModal()) {
+          <div class="fixed inset-0 z-50 bg-stone-950/45 backdrop-blur-sm" (click)="closeModal()">
+            <div class="absolute inset-x-0 bottom-0 mx-auto max-w-2xl p-4 sm:bottom-4" (click)="$event.stopPropagation()">
+              <app-card>
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">personalizar item</p>
+                    <h3 class="mt-1 text-2xl font-semibold tracking-tight text-stone-950">
+                      {{ selectedItem()!.name }}
+                    </h3>
+                    <p class="mt-2 text-sm leading-6 text-stone-600">{{ selectedItem()!.description }}</p>
+                  </div>
+                  <p class="text-xl font-semibold text-orange-600">
+                    R$ {{ selectedItem()!.price | number: '1.2-2' }}
+                  </p>
+                </div>
+
+                <div class="mt-6 flex items-center justify-between rounded-[24px] bg-stone-50 px-4 py-3">
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">quantidade</p>
+                    <p class="mt-1 text-lg font-semibold text-stone-950">{{ quantity() }}</p>
+                  </div>
+                  <div class="inline-flex items-center rounded-full border border-stone-200 bg-white px-2 py-2">
+                    <button
+                      (click)="decreaseQuantity()"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100"
+                    >
+                      −
+                    </button>
+                    <span class="min-w-8 text-center text-sm font-semibold text-stone-900">
+                      {{ quantity() }}
+                    </span>
+                    <button
+                      (click)="increaseQuantity()"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-stone-700 transition hover:bg-stone-100"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mt-5">
+                  <app-textarea
+                    label="Observacoes"
+                    placeholder="Ex.: sem cebola, molho a parte, caprichar no queijo..."
+                    [ngModel]="notes()"
+                    (ngModelChange)="notes.set($event)"
+                    [rows]="4"
+                  />
+                </div>
+
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <app-button variant="secondary" size="lg" [fullWidth]="true" (click)="closeModal()">
+                    Cancelar
+                  </app-button>
+                  <app-button size="lg" [fullWidth]="true" (click)="confirmAddToCart()">
+                    Adicionar ao carrinho
+                  </app-button>
+                </div>
+              </app-card>
             </div>
           </div>
         }
       }
     </div>
   `,
-  styles: [
-    `
-      @keyframes slideUp {
-        from {
-          transform: translateY(100%);
-        }
-        to {
-          transform: translateY(0);
-        }
-      }
-
-      .animate-slide-up {
-        animation: slideUp 0.3s ease-out;
-      }
-    `,
-  ],
 })
 export class RestaurantDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -191,20 +247,22 @@ export class RestaurantDetailComponent implements OnInit {
   private readonly location = inject(Location);
   readonly restaurantService = inject(RestaurantService);
   readonly cartService = inject(CartService);
+  readonly profileService = inject(ProfileService);
+  readonly promotionService = inject(PromotionService);
+  private readonly toastService = inject(ToastService);
 
-  // Local state
   private readonly quantitySignal = signal(1);
-  private readonly notesSignal = signal<string>('');
+  private readonly notesSignal = signal('');
   private readonly selectedItemSignal = signal<MenuItem | null>(null);
-  private readonly showQuantityModalSignal = signal<boolean>(false);
+  private readonly showQuantityModalSignal = signal(false);
 
-  // Computed
   restaurant = this.restaurantService.selectedRestaurant;
   menuItems = this.restaurantService.selectedRestaurantMenu;
   quantity = this.quantitySignal;
   notes = this.notesSignal;
   selectedItem = this.selectedItemSignal;
   showQuantityModal = this.showQuantityModalSignal;
+  coupons = this.promotionService.getAvailableCoupons();
 
   categories = computed(() => {
     const categories = new Set(this.menuItems().map((item) => item.category));
@@ -213,6 +271,15 @@ export class RestaurantDetailComponent implements OnInit {
 
   itemsByCategory = (category: string) =>
     this.menuItems().filter((item) => item.category === category);
+
+  isFavorite = computed(() => {
+    const restaurantId = this.restaurant()?.id;
+    return restaurantId ? this.profileService.isFavoriteRestaurant(restaurantId) : false;
+  });
+
+  restaurantCoupons = computed(() =>
+    this.coupons.filter((coupon) => !coupon.restaurantId || coupon.restaurantId === this.restaurant()?.id),
+  );
 
   ngOnInit() {
     const restaurantId = this.route.snapshot.paramMap.get('id');
@@ -232,16 +299,22 @@ export class RestaurantDetailComponent implements OnInit {
     const item = this.selectedItemSignal();
     if (item) {
       this.cartService.addItem(item, this.quantitySignal(), this.notesSignal() || undefined);
+      this.toastService.show(`${item.name} adicionado ao carrinho.`, 'success', 3200, {
+        title: 'Carrinho atualizado',
+        category: 'system',
+        actionLabel: 'Abrir carrinho',
+        link: '/cart',
+      });
       this.closeModal();
     }
   }
 
   increaseQuantity() {
-    this.quantitySignal.update((q) => q + 1);
+    this.quantitySignal.update((quantity) => quantity + 1);
   }
 
   decreaseQuantity() {
-    this.quantitySignal.update((q) => (q > 1 ? q - 1 : 1));
+    this.quantitySignal.update((quantity) => (quantity > 1 ? quantity - 1 : 1));
   }
 
   closeModal() {
@@ -255,5 +328,63 @@ export class RestaurantDetailComponent implements OnInit {
 
   goToCart() {
     this.router.navigate(['/cart']);
+  }
+
+  toggleFavorite() {
+    const restaurantId = this.restaurant()?.id;
+    if (restaurantId) {
+      this.profileService.toggleFavoriteRestaurant(restaurantId);
+      this.toastService.show(
+        this.profileService.isFavoriteRestaurant(restaurantId)
+          ? 'Restaurante salvo nos favoritos.'
+          : 'Restaurante removido dos favoritos.',
+        'success',
+        3200,
+        {
+          title: 'Favoritos atualizados',
+          category: 'profile',
+          actionLabel: 'Ver favoritos',
+          link: '/favorites',
+        },
+      );
+    }
+  }
+
+  toggleFavoriteItem(item: MenuItem) {
+    this.profileService.toggleFavoriteMenuItem(item.id);
+    this.toastService.show(
+      this.profileService.isFavoriteMenuItem(item.id)
+        ? `${item.name} salvo nos favoritos.`
+        : `${item.name} removido dos favoritos.`,
+      'success',
+      3200,
+      {
+        title: 'Favoritos atualizados',
+        category: 'profile',
+        actionLabel: 'Ver perfil',
+        link: '/profile',
+      },
+    );
+  }
+
+  toggleSavedCoupon(couponCode: string) {
+    if (this.profileService.isCouponSaved(couponCode)) {
+      this.profileService.removeSavedCoupon(couponCode);
+      this.toastService.show('Cupom removido da carteira.', 'info', 3200, {
+        title: 'Carteira promocional',
+        category: 'promotion',
+        actionLabel: 'Ver perfil',
+        link: '/profile',
+      });
+      return;
+    }
+
+    this.profileService.saveCoupon(couponCode);
+    this.toastService.show('Cupom salvo na carteira.', 'success', 3200, {
+      title: 'Carteira promocional',
+      category: 'promotion',
+      actionLabel: 'Ver perfil',
+      link: '/profile',
+    });
   }
 }

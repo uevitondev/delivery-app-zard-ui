@@ -1,18 +1,17 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { Location, CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '@/shared/core/services/cart.service';
-import { OrderService } from '@/shared/core/services/order.service';
-import { AddressService } from '@/shared/core/services/address.service';
-import { Address, OrderStatus, PaymentMethod } from '@/shared/models';
+import { Router } from '@angular/router';
 import {
-  CardComponent,
   ButtonComponent,
+  CardComponent,
   InputComponent,
   SelectComponent,
   TextareaComponent,
 } from '@/shared/components';
+import { ToastService } from '@/shared/core/services/toast.service';
+import { PaymentMethodType } from '@/shared/models';
+import { CheckoutFacade } from './checkout.facade';
 
 @Component({
   selector: 'app-checkout',
@@ -28,368 +27,447 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen bg-gray-50">
-      <!-- Header -->
-      <div class="sticky top-0 z-40 bg-white shadow-sm">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center">
-          <button (click)="goBack()" class="text-2xl hover:text-blue-600 transition-colors mr-4">
-            ←
-          </button>
-          <h1 class="text-2xl font-bold text-gray-900">Checkout</h1>
+    <div class="app-shell">
+      <header class="app-topbar">
+        <div class="app-topbar-inner">
+          <div class="flex items-center gap-3">
+            <button
+              (click)="goBack()"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/80 text-lg text-stone-700 shadow-[0_10px_24px_rgba(118,60,24,0.08)] transition hover:-translate-y-0.5"
+            >
+              ←
+            </button>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">pagamento seguro</p>
+              <h1 class="text-2xl font-semibold tracking-tight text-stone-950">Checkout</h1>
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
 
-      <div class="max-w-4xl mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Formulário -->
-          <div class="lg:col-span-2">
-            <!-- Seleção de Endereço -->
-            <app-card header="📍 Endereço de Entrega" class="mb-6">
-              <!-- Listar endereços existentes -->
-              <div class="space-y-3 mb-6">
+      <main class="app-page py-6">
+        <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <section class="space-y-5">
+            <app-card header="Endereco de entrega">
+              <div class="space-y-3">
                 @for (address of addressService.addresses(); track address.id) {
-                  <div
-                    class="p-4 border-2 rounded-lg cursor-pointer transition-all"
-                    [ngClass]="{
-                      'border-blue-600 bg-blue-50': selectedAddressId() === address.id,
-                      'border-gray-300 hover:border-gray-400': selectedAddressId() !== address.id,
-                    }"
+                  <button
+                    type="button"
+                    class="w-full rounded-[24px] border px-4 py-4 text-left transition"
+                    [class.border-orange-300]="selectedAddressId() === address.id"
+                    [class.bg-orange-50]="selectedAddressId() === address.id"
+                    [class.border-stone-200]="selectedAddressId() !== address.id"
+                    [class.bg-white]="selectedAddressId() !== address.id"
                     (click)="selectAddress(address.id)"
                   >
-                    <div class="flex justify-between items-start">
+                    <div class="flex items-start justify-between gap-3">
                       <div>
-                        <p class="font-semibold text-gray-900">
+                        <p class="text-base font-semibold text-stone-950">
                           {{ address.street }}, {{ address.number }}
-                          @if (address.complement) {
-                            <span class="text-gray-600">- {{ address.complement }}</span>
-                          }
                         </p>
-                        <p class="text-sm text-gray-600">
+                        <p class="mt-1 text-sm text-stone-600">
                           {{ address.neighborhood }}, {{ address.city }} - {{ address.state }}
                         </p>
-                        <p class="text-sm text-gray-600">CEP: {{ address.zipCode }}</p>
+                        <p class="mt-1 text-sm text-stone-500">CEP {{ address.zipCode }}</p>
                       </div>
                       @if (address.isDefault) {
-                        <span class="text-xs bg-green-600 text-white px-2 py-1 rounded"
-                          >Padrão</span
-                        >
+                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          Padrao
+                        </span>
                       }
                     </div>
-                  </div>
+                  </button>
                 }
               </div>
 
-              <!-- Botão para adicionar novo endereço -->
-              <app-button
-                variant="ghost"
-                size="md"
-                [fullWidth]="true"
-                (click)="toggleNewAddressForm()"
-              >
-                {{ showNewAddressForm() ? '✕ Cancelar' : '+ Novo Endereço' }}
-              </app-button>
+              <div class="mt-5">
+                <app-button variant="ghost" [fullWidth]="true" (click)="toggleNewAddressForm()">
+                  {{ showNewAddressForm() ? 'Fechar novo endereco' : 'Adicionar novo endereco' }}
+                </app-button>
+              </div>
 
-              <!-- Formulário de novo endereço -->
               @if (showNewAddressForm()) {
-                <div class="mt-6 pt-6 border-t border-gray-300 space-y-4">
-                  <h3 class="font-semibold text-gray-900">Cadastrar Novo Endereço</h3>
-
-                  <app-input
-                    label="Rua"
-                    placeholder="Nome da rua"
-                    [(ngModel)]="newAddress.street"
-                    name="newStreet"
-                  />
-
-                  <div class="grid grid-cols-2 gap-4">
+                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5 sm:grid-cols-2">
+                  <div class="sm:col-span-2">
                     <app-input
-                      label="Número"
-                      placeholder="123"
-                      [(ngModel)]="newAddress.number"
-                      name="newNumber"
-                    />
-                    <app-input
-                      label="Complemento"
-                      placeholder="Apt 42..."
-                      [(ngModel)]="newAddress.complement"
-                      name="newComplement"
+                      label="Rua"
+                      placeholder="Nome da rua"
+                      [(ngModel)]="newAddress.street"
+                      name="newStreet"
                     />
                   </div>
-
+                  <app-input
+                    label="Numero"
+                    placeholder="123"
+                    [(ngModel)]="newAddress.number"
+                    name="newNumber"
+                  />
+                  <app-input
+                    label="Complemento"
+                    placeholder="Apto, bloco, referencia"
+                    [(ngModel)]="newAddress.complement"
+                    name="newComplement"
+                  />
                   <app-input
                     label="Bairro"
                     placeholder="Bairro"
                     [(ngModel)]="newAddress.neighborhood"
                     name="newNeighborhood"
                   />
-
-                  <div class="grid grid-cols-2 gap-4">
-                    <app-input
-                      label="Cidade"
-                      placeholder="São Paulo"
-                      [(ngModel)]="newAddress.city"
-                      name="newCity"
-                    />
-                    <app-input
-                      label="CEP"
-                      placeholder="12345-678"
-                      [(ngModel)]="newAddress.zipCode"
-                      name="newZipCode"
-                    />
-                  </div>
-
+                  <app-input
+                    label="Cidade"
+                    placeholder="Cidade"
+                    [(ngModel)]="newAddress.city"
+                    name="newCity"
+                  />
+                  <app-input
+                    label="CEP"
+                    placeholder="12345-678"
+                    [(ngModel)]="newAddress.zipCode"
+                    name="newZipCode"
+                  />
                   <app-select
                     label="Estado"
-                    placeholder="-- Selecione --"
+                    placeholder="Selecione"
                     [options]="stateOptions"
                     [(ngModel)]="newAddress.state"
                     name="newState"
                   />
 
-                  <app-button
-                    variant="primary"
-                    size="md"
-                    [fullWidth]="true"
-                    [disabled]="!isNewAddressValid()"
-                    (click)="addAndSelectAddress()"
+                  <div class="sm:col-span-2">
+                    <app-button
+                      [fullWidth]="true"
+                      [disabled]="!isNewAddressValid()"
+                      (click)="addAndSelectAddress()"
+                    >
+                      Salvar endereco
+                    </app-button>
+                  </div>
+                </div>
+              }
+            </app-card>
+
+            <app-card header="Pagamento">
+              <div class="space-y-3">
+                @for (paymentMethod of profileService.paymentMethods(); track paymentMethod.id) {
+                  <button
+                    type="button"
+                    class="w-full rounded-[24px] border px-4 py-4 text-left transition"
+                    [class.border-orange-300]="selectedPaymentMethodId() === paymentMethod.id"
+                    [class.bg-orange-50]="selectedPaymentMethodId() === paymentMethod.id"
+                    [class.border-stone-200]="selectedPaymentMethodId() !== paymentMethod.id"
+                    [class.bg-white]="selectedPaymentMethodId() !== paymentMethod.id"
+                    (click)="selectedPaymentMethodId.set(paymentMethod.id)"
                   >
-                    Adicionar e Selecionar
+                    <div class="flex items-center justify-between gap-3">
+                      <div>
+                        <p class="font-semibold text-stone-950">{{ paymentMethod.label || formatPaymentMethod(paymentMethod.type) }}</p>
+                        <p class="mt-1 text-sm text-stone-500">{{ formatPaymentMethod(paymentMethod.type) }}</p>
+                      </div>
+                      @if (paymentMethod.isDefault) {
+                        <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
+                          Principal
+                        </span>
+                      }
+                    </div>
+                  </button>
+                }
+              </div>
+
+              <div class="mt-5">
+                <app-button variant="ghost" [fullWidth]="true" (click)="toggleNewPaymentForm()">
+                  {{ showNewPaymentForm() ? 'Fechar novo metodo' : 'Adicionar metodo de pagamento' }}
+                </app-button>
+              </div>
+
+              @if (showNewPaymentForm()) {
+                <div class="mt-5 grid gap-4 border-t border-stone-100 pt-5">
+                  <app-select
+                    label="Tipo"
+                    placeholder="Selecione"
+                    [options]="paymentTypeOptions"
+                    [(ngModel)]="newPayment.type"
+                    name="paymentType"
+                  />
+                  <app-input
+                    label="Nome exibido"
+                    placeholder="Ex.: Visa final 4242"
+                    [(ngModel)]="newPayment.label"
+                    name="paymentLabel"
+                  />
+                  <app-input
+                    label="Ultimos 4 digitos"
+                    placeholder="4242"
+                    [(ngModel)]="newPayment.lastDigits"
+                    name="paymentDigits"
+                  />
+                  <app-button
+                    [fullWidth]="true"
+                    [disabled]="!isNewPaymentValid()"
+                    (click)="addPaymentMethod()"
+                  >
+                    Salvar metodo
                   </app-button>
                 </div>
               }
             </app-card>
 
-            <!-- Método de Pagamento -->
-            <app-card header="💳 Método de Pagamento" class="mb-6">
-              <app-select
-                label="Selecione um método"
-                placeholder="-- Selecione --"
-                [options]="paymentOptions"
-                [(ngModel)]="selectedPaymentMethod"
-                name="paymentMethod"
+            <app-card header="Cupom">
+              <app-input
+                label="Codigo promocional"
+                placeholder="Ex.: SAVE10"
+                [(ngModel)]="couponCode"
+                name="couponCode"
               />
+
+              <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+                <app-button variant="secondary" [fullWidth]="true" (click)="applyCoupon()">
+                  Aplicar cupom
+                </app-button>
+                @if (appliedCoupon()) {
+                  <app-button variant="ghost" [fullWidth]="true" (click)="removeCoupon()">
+                    Remover
+                  </app-button>
+                }
+              </div>
+
+              @if (couponError()) {
+                <p class="mt-3 text-sm font-semibold text-red-600">{{ couponError() }}</p>
+              }
+
+              @if (appliedCoupon()) {
+                <div class="mt-4 rounded-[24px] bg-emerald-50 px-4 py-4">
+                  <p class="font-semibold text-emerald-800">{{ appliedCoupon()!.title }}</p>
+                  <p class="mt-1 text-sm text-emerald-700">
+                    Desconto aplicado: R$ {{ appliedCoupon()!.discount | number: '1.2-2' }}
+                  </p>
+                </div>
+              }
             </app-card>
 
-            <!-- Observações -->
-            <app-card header="📝 Observações" class="mb-6">
+            <app-card header="Observacoes para entrega">
               <app-textarea
-                label="Observações especiais"
-                placeholder="Informações adicionais para o entregador..."
+                label="Instrucoes"
+                placeholder="Ex.: tocar interfone, sem molho, deixar na portaria..."
                 [(ngModel)]="notes"
                 name="notes"
-                [rows]="4"
+                [rows]="5"
               />
             </app-card>
-          </div>
+          </section>
 
-          <!-- Resumo do Pedido -->
-          <div class="lg:col-span-1">
-            <app-card header="📦 Resumo do Pedido" class="sticky top-24">
-              <div class="space-y-3 mb-6">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Subtotal</span>
-                  <span class="font-semibold">
-                    R$ {{ cartService.subtotal() | number: '1.2-2' }}
-                  </span>
+          <aside class="xl:sticky xl:top-24 xl:self-start">
+            <app-card>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">resumo</p>
+              <h2 class="mt-2 text-2xl font-semibold tracking-tight text-stone-950">Confirmar pedido</h2>
+
+              <div class="mt-5 space-y-4">
+                @for (item of cartService.items(); track item.menuItem.id) {
+                  <div class="flex items-center justify-between gap-3 rounded-[22px] bg-stone-50 px-4 py-3">
+                    <div>
+                      <p class="font-semibold text-stone-900">{{ item.menuItem.name }}</p>
+                      <p class="text-sm text-stone-500">{{ item.quantity }}x item</p>
+                    </div>
+                    <p class="font-semibold text-stone-900">R$ {{ item.subtotal | number: '1.2-2' }}</p>
+                  </div>
+                }
+              </div>
+
+              <div class="mt-6 space-y-3 border-t border-stone-100 pt-5 text-sm">
+                <div class="flex justify-between text-stone-600">
+                  <span>Subtotal</span>
+                  <span class="font-semibold text-stone-900">R$ {{ cartService.subtotal() | number: '1.2-2' }}</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Entrega</span>
-                  <span class="font-semibold">
-                    R$ {{ cartService.deliveryFee() | number: '1.2-2' }}
-                  </span>
+                <div class="flex justify-between text-stone-600">
+                  <span>Entrega</span>
+                  <span class="font-semibold text-stone-900">R$ {{ cartService.deliveryFee() | number: '1.2-2' }}</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Impostos (10%)</span>
-                  <span class="font-semibold"> R$ {{ cartService.tax() | number: '1.2-2' }} </span>
+                <div class="flex justify-between text-stone-600">
+                  <span>Impostos</span>
+                  <span class="font-semibold text-stone-900">R$ {{ cartService.tax() | number: '1.2-2' }}</span>
                 </div>
-                <div class="border-t border-gray-200 pt-3 flex justify-between">
-                  <span class="font-bold text-gray-900">Total</span>
-                  <span class="font-bold text-lg text-blue-600">
-                    R$ {{ cartService.total() | number: '1.2-2' }}
-                  </span>
+                @if (appliedCoupon()) {
+                  <div class="flex justify-between text-emerald-700">
+                    <span>Desconto</span>
+                    <span class="font-semibold">- R$ {{ appliedCoupon()!.discount | number: '1.2-2' }}</span>
+                  </div>
+                }
+              </div>
+
+              <div class="mt-5 flex items-end justify-between">
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">total</p>
+                  <p class="text-3xl font-semibold tracking-tight text-stone-950">
+                    R$ {{ checkoutTotal() | number: '1.2-2' }}
+                  </p>
                 </div>
               </div>
 
-              <app-button
-                variant="primary"
-                size="lg"
-                [fullWidth]="true"
-                [disabled]="!isFormValid()"
-                (click)="confirmOrder()"
-              >
-                Confirmar Pedido
-              </app-button>
-
-              <app-button
-                variant="ghost"
-                size="md"
-                [fullWidth]="true"
-                class="mt-3"
-                (click)="goBack()"
-              >
-                Continuar Comprando
-              </app-button>
+              <div class="mt-6 space-y-3">
+                <app-button
+                  size="lg"
+                  [fullWidth]="true"
+                  [disabled]="!isFormValid()"
+                  (click)="confirmOrder()"
+                >
+                  Confirmar pedido
+                </app-button>
+                <app-button variant="secondary" size="lg" [fullWidth]="true" (click)="goBack()">
+                  Voltar
+                </app-button>
+              </div>
             </app-card>
-          </div>
+          </aside>
         </div>
-      </div>
+      </main>
     </div>
   `,
 })
 export class CheckoutComponent {
   private readonly location = inject(Location);
   private readonly router = inject(Router);
-  readonly cartService = inject(CartService);
-  private readonly orderService = inject(OrderService);
-  readonly addressService = inject(AddressService);
+  readonly facade = inject(CheckoutFacade);
+  readonly cartService = this.facade.cartPort;
+  readonly addressService = this.facade.addressBook;
+  readonly profileService = this.facade.profileStore;
+  private readonly toastService = inject(ToastService);
+  readonly showNewAddressForm = this.facade.showNewAddressForm;
+  readonly showNewPaymentForm = this.facade.showNewPaymentForm;
+  readonly selectedAddressId = this.facade.selectedAddressId;
+  readonly selectedPaymentMethodId = this.facade.selectedPaymentMethodId;
+  readonly notes = this.facade.notes;
+  readonly appliedCoupon = this.facade.appliedCoupon;
+  readonly couponError = this.facade.couponError;
+  get couponCode() {
+    return this.facade.couponCode;
+  }
+  set couponCode(value: string) {
+    this.facade.couponCode = value;
+  }
+  get newAddress() {
+    return this.facade.newAddress;
+  }
+  get newPayment() {
+    return this.facade.newPayment;
+  }
 
-  // Signals
-  showNewAddressForm = signal(false);
-  selectedAddressId = signal<string | null>(null);
-  selectedPaymentMethod = signal('');
-  notes = signal('');
-
-  // Novo endereço
-  newAddress = {
-    street: '',
-    number: '',
-    complement: '',
-    neighborhood: '',
-    city: '',
-    state: 'SP',
-    zipCode: '',
-  };
-
-  // Opções para os selects
   stateOptions = [
-    { label: 'São Paulo', value: 'SP' },
+    { label: 'Sao Paulo', value: 'SP' },
     { label: 'Rio de Janeiro', value: 'RJ' },
     { label: 'Minas Gerais', value: 'MG' },
     { label: 'Bahia', value: 'BA' },
-    { label: 'Paraná', value: 'PR' },
+    { label: 'Parana', value: 'PR' },
     { label: 'Santa Catarina', value: 'SC' },
     { label: 'Rio Grande do Sul', value: 'RS' },
   ];
 
-  paymentOptions = [
-    { label: 'Cartão de Crédito', value: 'credit_card' },
-    { label: 'Cartão de Débito', value: 'debit_card' },
-    { label: 'PIX', value: 'pix' },
-    { label: 'Dinheiro', value: 'cash' },
+  paymentTypeOptions = [
+    { label: 'Cartao de Credito', value: PaymentMethodType.CREDIT_CARD },
+    { label: 'Cartao de Debito', value: PaymentMethodType.DEBIT_CARD },
+    { label: 'PIX', value: PaymentMethodType.PIX },
+    { label: 'Dinheiro', value: PaymentMethodType.CASH },
   ];
 
-  constructor() {
-    // Selecionar o endereço padrão ao iniciar
-    const defaultAddr = this.addressService.defaultAddress();
-    if (defaultAddr) {
-      this.selectedAddressId.set(defaultAddr.id);
-    }
-  }
+  checkoutTotal = this.facade.checkoutTotal;
 
   goBack() {
     this.location.back();
   }
 
   selectAddress(addressId: string) {
-    this.selectedAddressId.set(addressId);
-    this.addressService.selectAddress(addressId);
+    this.facade.selectAddress(addressId);
   }
 
   toggleNewAddressForm() {
-    this.showNewAddressForm.update((value) => !value);
-    if (this.showNewAddressForm()) {
-      this.resetNewAddressForm();
-    }
+    this.facade.toggleNewAddressForm();
   }
 
-  resetNewAddressForm() {
-    this.newAddress = {
-      street: '',
-      number: '',
-      complement: '',
-      neighborhood: '',
-      city: '',
-      state: 'SP',
-      zipCode: '',
-    };
+  toggleNewPaymentForm() {
+    this.facade.toggleNewPaymentForm();
   }
 
-  isNewAddressValid(): boolean {
-    return (
-      this.newAddress.street.trim().length > 0 &&
-      this.newAddress.number.trim().length > 0 &&
-      this.newAddress.neighborhood.trim().length > 0 &&
-      this.newAddress.city.trim().length > 0 &&
-      this.newAddress.zipCode.trim().length > 0
-    );
+  isNewAddressValid() {
+    return this.facade.isNewAddressValid();
+  }
+
+  isNewPaymentValid() {
+    return this.facade.isNewPaymentValid();
   }
 
   addAndSelectAddress() {
-    if (!this.isNewAddressValid()) return;
-
-    const newAddr = this.addressService.addAddress({
-      street: this.newAddress.street,
-      number: this.newAddress.number,
-      complement: this.newAddress.complement || undefined,
-      neighborhood: this.newAddress.neighborhood,
-      city: this.newAddress.city,
-      state: this.newAddress.state,
-      zipCode: this.newAddress.zipCode,
-      isDefault: false,
+    if (!this.facade.addAndSelectAddress()) return;
+    this.toastService.show('Endereco salvo com sucesso.', 'success', 3200, {
+      title: 'Endereco atualizado',
+      category: 'profile',
+      actionLabel: 'Continuar checkout',
+      link: '/checkout',
     });
-
-    this.selectedAddressId.set(newAddr.id);
-    this.addressService.selectAddress(newAddr.id);
-    this.showNewAddressForm.set(false);
-    this.resetNewAddressForm();
   }
 
-  isFormValid(): boolean {
-    return this.selectedAddressId() !== null && this.selectedPaymentMethod().length > 0;
+  addPaymentMethod() {
+    if (!this.facade.addPaymentMethod()) return;
+    this.toastService.show('Metodo de pagamento salvo.', 'success', 3200, {
+      title: 'Pagamento atualizado',
+      category: 'profile',
+      actionLabel: 'Continuar checkout',
+      link: '/checkout',
+    });
   }
 
-  confirmOrder() {
-    if (!this.isFormValid()) return;
+  applyCoupon() {
+    const result = this.facade.applyCoupon();
+    if (result.appliedCoupon) {
+      this.toastService.show('Cupom aplicado com sucesso.', 'success', 3200, {
+        title: 'Promocao ativada',
+        category: 'promotion',
+        actionLabel: 'Ver checkout',
+        link: '/checkout',
+      });
+    } else if (result.error) {
+      this.toastService.show(result.error, 'warning', 3200, {
+        title: 'Cupom invalido',
+        category: 'promotion',
+        actionLabel: 'Revisar pedido',
+        link: '/checkout',
+      });
+    }
+  }
 
-    const selectedAddr = this.addressService.selectedAddress();
-    if (!selectedAddr) return;
+  removeCoupon() {
+    this.facade.removeCoupon();
+    this.toastService.show('Cupom removido do pedido.', 'info', 3200, {
+      title: 'Promocao removida',
+      category: 'promotion',
+      actionLabel: 'Ver checkout',
+      link: '/checkout',
+    });
+  }
 
-    // Mapear CartItems para OrderItems
-    const orderItems = this.cartService.items().map((cartItem) => ({
-      menuItem: cartItem.menuItem,
-      quantity: cartItem.quantity,
-      notes: cartItem.notes,
-      price: cartItem.menuItem.price,
-    }));
+  isFormValid() {
+    return this.facade.isFormValid();
+  }
 
-    // Criar pedido
-    const order = {
-      id: Date.now().toString(),
-      restaurantId: this.cartService.cart()?.restaurantId || '',
-      userId: 'user-123', // Obter do AuthService em produção
-      items: orderItems,
-      status: OrderStatus.PENDING,
-      subtotal: this.cartService.subtotal(),
-      deliveryFee: this.cartService.deliveryFee(),
-      tax: this.cartService.tax(),
-      total: this.cartService.total(),
-      deliveryAddress: selectedAddr,
-      createdAt: new Date(),
-      paymentMethod: {
-        id: Date.now().toString(),
-        type: this.selectedPaymentMethod() as any,
-        isDefault: true,
-      } as PaymentMethod,
-      notes: this.notes() || undefined,
+  async confirmOrder() {
+    const createdOrder = await this.facade.confirmOrder();
+    if (!createdOrder) return;
+    this.toastService.show('Pedido criado com sucesso.', 'success', 3200, {
+      title: 'Pedido enviado',
+      category: 'order',
+      actionLabel: 'Acompanhar pedido',
+      link: `/orders/${createdOrder.id}`,
+    });
+    this.router.navigate(['/orders', createdOrder.id]);
+  }
+
+  formatPaymentMethod(type: PaymentMethodType) {
+    const labels: Record<PaymentMethodType, string> = {
+      [PaymentMethodType.CREDIT_CARD]: 'Cartao de credito',
+      [PaymentMethodType.DEBIT_CARD]: 'Cartao de debito',
+      [PaymentMethodType.PIX]: 'PIX',
+      [PaymentMethodType.CASH]: 'Dinheiro',
+      [PaymentMethodType.WALLET]: 'Carteira',
     };
 
-    // Salvar pedido
-    this.orderService.createOrder(order);
-
-    // Limpar carrinho
-    this.cartService.clearCart();
-
-    // Redirecionar
-    this.router.navigate(['/orders', order.id]);
+    return labels[type];
   }
 }
