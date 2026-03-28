@@ -55,6 +55,7 @@ export class LoginComponent {
   }
 
   login() {
+   
     this.authService.login(this.route.snapshot.queryParamMap.get('redirectTo') ?? undefined);
   }
 }

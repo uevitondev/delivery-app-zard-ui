@@ -10,9 +10,18 @@ import { ZardDarkModeService } from '@/shared/core';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly darkMode = inject(ZardDarkModeService);
+  protected readonly darkMode = inject<ZardDarkModeService>(ZardDarkModeService);
   protected readonly title = signal('deliveryapp-zardui');
-  protected readonly themeLabel = computed(() =>
-    this.darkMode.resolvedTheme() === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro',
-  );
+  protected readonly themeLabel = computed(() => {
+    const mode = this.darkMode.mode();
+    if (mode === 'system') {
+      return 'Modo sistema (prefere tema do sistema). Clique para tema claro';
+    }
+
+    if (mode === 'light') {
+      return 'Modo claro ativo. Clique para tema escuro';
+    }
+
+    return 'Modo escuro ativo. Clique para tema sistema';
+  });
 }

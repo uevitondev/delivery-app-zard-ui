@@ -1,11 +1,15 @@
 export const environment = {
   production: false,
   auth: {
-    useMock: true,
-    issuer: 'http://localhost:8080/realms/deliveryapp',
-    clientId: 'deliveryapp-client',
-    scope: 'openid profile email',
+    useMock: false,
+    issuer: 'http://localhost:8080/realms/delivery-platform',
+    clientId: 'frontend-app',
+    scope: 'web-origins openid email profile',
+    redirectUri: `${window.location.origin}/auth-redirect`,
+    postLogoutRedirectUri: `${window.location.origin}/`,
+    responseType: 'code',
     strictDiscoveryDocumentValidation: false,
+    silentRefreshRedirectUri: `${window.location.origin}/silent-refresh.html`,
     sessionChecksEnabled: true,
     showDebugInformation: true,
     mockUser: {

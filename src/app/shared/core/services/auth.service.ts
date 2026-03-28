@@ -52,14 +52,16 @@ export class AuthService {
 
     // Configurar OIDC (Modo Real)
     this.oauthService.configure({
-      clientId: environment.auth.clientId,
-      redirectUri: `${window.location.origin}/auth-redirect`,
-      silentRefreshRedirectUri: `${window.location.origin}/silent-refresh.html`,
-      scope: environment.auth.scope,
       issuer: environment.auth.issuer,
+      clientId: environment.auth.clientId,
+      redirectUri:environment.auth.redirectUri,
+      postLogoutRedirectUri: environment.auth.postLogoutRedirectUri,
+      responseType: environment.auth.responseType,
+      scope: environment.auth.scope,
+      showDebugInformation: environment.auth.showDebugInformation,
       strictDiscoveryDocumentValidation: environment.auth.strictDiscoveryDocumentValidation,
       sessionChecksEnabled: environment.auth.sessionChecksEnabled,
-      showDebugInformation: environment.auth.showDebugInformation,
+      silentRefreshRedirectUri: environment.auth.silentRefreshRedirectUri, 
     });
 
     try {

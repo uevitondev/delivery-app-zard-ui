@@ -15,7 +15,7 @@ import { ToastComponent } from './toast.component';
           class="pointer-events-auto"
           [message]="toast.message"
           [type]="toast.type"
-        />
+        ></z-toast>
       }
     </div>
   `,

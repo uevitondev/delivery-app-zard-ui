@@ -8,7 +8,9 @@ export class ZardDarkModeService {
   private readonly document = inject(DOCUMENT);
   private readonly storageKey = 'zard-theme';
   private readonly mediaQuery =
-    typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-color-scheme: dark)')
+      : null;
 
   readonly mode = signal<ThemeMode>(this.getInitialMode());
   readonly resolvedTheme = computed<'light' | 'dark'>(() => {
@@ -37,7 +39,8 @@ export class ZardDarkModeService {
   }
 
   toggleTheme() {
-    this.setTheme(this.resolvedTheme() === 'dark' ? 'light' : 'dark');
+    const nextMode: ThemeMode = this.mode() === 'system' ? 'light' : this.mode() === 'light' ? 'dark' : 'system';
+    this.setTheme(nextMode);
   }
 
   private getInitialMode(): ThemeMode {

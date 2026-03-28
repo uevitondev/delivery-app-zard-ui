@@ -2,9 +2,9 @@ export const environment = {
   production: true,
   auth: {
     useMock: false,
-    issuer: 'http://localhost:8080/realms/deliveryapp',
-    clientId: 'deliveryapp-client',
-    scope: 'openid profile email',
+    issuer: 'http://localhost:8080/realms/delivery-platform',
+    clientId: 'frontend-app',
+    scope: 'openid profile email roles',
     strictDiscoveryDocumentValidation: false,
     sessionChecksEnabled: true,
     showDebugInformation: false,
