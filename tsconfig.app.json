@@ -4,17 +4,12 @@
     "outDir": "./out-tsc/app",
     "rootDir": "./src",
     "types": [],
-    "baseUrl": "src/app",
     "paths": {
-      "@/*": [
-        "*"
-      ]
+      "@app/*": ["./src/app/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@components/*": ["./src/components/*"]
     }
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "src/**/*.spec.ts"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
 }
