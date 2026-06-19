@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { provideZard } from '@/shared/core/provider/providezard';
 import { httpAuthInterceptor } from './shared/core/interceptors/http-auth.interceptor';
 import { provideDomainAdapters } from '@/shared/core/contracts/domain-tokens';
+import { ToastService } from '@/shared/components/toast/toast.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,5 +17,6 @@ export const appConfig: ApplicationConfig = {
     ...provideDomainAdapters(),
     provideHttpClient(withInterceptors([httpAuthInterceptor])),
     provideOAuthClient(),
+    ToastService,
   ],
 };

@@ -4,10 +4,9 @@ export * from './card/card.component';
 export * from './badge/badge.component';
 export * from './input/input.component';
 export * from './textarea/textarea.component';
-export * from './select/select.component';
-export * from './modal/modal.component';
-export * from './toast/toast.component';
-export * from './toast/toast-host.component';
+export * from './select/index';
+export * from './modal/index';
+export * from './toast/index';
 export * from './quantity-picker/quantity-picker.component';
 
 // App Components
