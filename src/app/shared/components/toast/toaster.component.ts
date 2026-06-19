@@ -19,11 +19,11 @@ export type ToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-le
       aria-live="polite"
       aria-atomic="false"
     >
-      @for (toast of toastService.toasts$(); track toast.id) {
+      @for (item of toastService.toasts$(); track item.id) {
         <z-toast-item
-          [toast]="toast"
-          (dismiss)="toastService.dismiss(toast.id)"
-        />
+          [toast]="item"
+          (dismiss)="toastService.dismiss(item.id)"
+        ></z-toast-item>
       }
     </div>
   `,
