@@ -14,10 +14,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": "./",
+    "baseUrl": "src/app",
     "paths": {
       "@/*": [
-        "src/app/*"
+        "*"
       ]
     }
   },

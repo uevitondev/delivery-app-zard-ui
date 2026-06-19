@@ -16,11 +16,11 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render the dev auth badge in mock mode', async () => {
+  it('should not render the dev auth badge before mock login', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('MODO DEV: Mock Auth Ativo');
+    expect(compiled.textContent).not.toContain('MODO DEV: Mock Auth Ativo');
   });
 });

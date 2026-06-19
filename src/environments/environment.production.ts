@@ -5,7 +5,11 @@ export const environment = {
     issuer: 'http://localhost:8080/realms/delivery-platform',
     clientId: 'frontend-app',
     scope: 'openid profile email roles',
+    redirectUri: `${window.location.origin}/auth-redirect`,
+    postLogoutRedirectUri: `${window.location.origin}/`,
+    responseType: 'code',
     strictDiscoveryDocumentValidation: false,
+    silentRefreshRedirectUri: `${window.location.origin}/silent-refresh.html`,
     sessionChecksEnabled: true,
     showDebugInformation: false,
     mockUser: {
@@ -13,6 +17,7 @@ export const environment = {
       email: 'demo@deliveryapp.com',
       name: 'Demo User',
       preferred_username: 'demo_user',
+      password: 'demo123',
     },
   },
 };

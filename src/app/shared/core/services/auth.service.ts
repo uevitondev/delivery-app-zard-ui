@@ -3,12 +3,14 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '../../../../environments/environment';
 
 const RETURN_URL_STORAGE_KEY = 'deliveryapp.returnUrl';
+const AUTH_MODE_STORAGE_KEY = 'deliveryapp.authMode';
 
 export interface AuthUser {
   sub: string;
   email: string;
   name: string;
   preferred_username: string;
+  password?: string;
 }
 
 @Injectable({
@@ -17,17 +19,20 @@ export interface AuthUser {
 export class AuthService {
   private readonly oauthService = inject(OAuthService, { optional: true });
   private readonly initializationPromise: Promise<void>;
+  private oauthConfigured = false;
+  private oauthEventsSubscribed = false;
 
   // Signals para state
   private readonly isAuthenticatedSignal = signal<boolean>(false);
   private readonly userSignal = signal<AuthUser | null>(null);
   private readonly loadingSignal = signal<boolean>(true);
+  private readonly isMockModeSignal = signal<boolean>(this.getInitialMockMode());
 
   // Exposição pública como computed (read-only)
   readonly isAuthenticated = computed(() => this.isAuthenticatedSignal());
   readonly user = computed(() => this.userSignal());
   readonly loading = computed(() => this.loadingSignal());
-  readonly isMockMode = computed(() => environment.auth.useMock);
+  readonly isMockMode = computed(() => this.isMockModeSignal());
 
   // Derived computed signal
   readonly username = computed(() => this.user()?.preferred_username ?? '');
@@ -36,37 +41,37 @@ export class AuthService {
     this.initializationPromise = this.initializeAuth();
   }
 
+  private getInitialMockMode(): boolean {
+    const savedMode = localStorage.getItem(AUTH_MODE_STORAGE_KEY);
+
+    if (savedMode === 'mock') {
+      return true;
+    }
+
+    if (savedMode === 'keycloak') {
+      return false;
+    }
+
+    return environment.auth.useMock;
+  }
+
   private async initializeAuth() {
     if (this.isMockMode()) {
-      this.isAuthenticatedSignal.set(true);
-      this.userSignal.set(environment.auth.mockUser);
+      this.isAuthenticatedSignal.set(false);
+      this.userSignal.set(null);
       this.loadingSignal.set(false);
       return;
     }
 
-    if (!this.oauthService) {
+    if (!this.configureOAuth()) {
       console.error('OAuthService não foi fornecido para o modo de autenticação real.');
       this.loadingSignal.set(false);
       return;
     }
 
-    // Configurar OIDC (Modo Real)
-    this.oauthService.configure({
-      issuer: environment.auth.issuer,
-      clientId: environment.auth.clientId,
-      redirectUri:environment.auth.redirectUri,
-      postLogoutRedirectUri: environment.auth.postLogoutRedirectUri,
-      responseType: environment.auth.responseType,
-      scope: environment.auth.scope,
-      showDebugInformation: environment.auth.showDebugInformation,
-      strictDiscoveryDocumentValidation: environment.auth.strictDiscoveryDocumentValidation,
-      sessionChecksEnabled: environment.auth.sessionChecksEnabled,
-      silentRefreshRedirectUri: environment.auth.silentRefreshRedirectUri, 
-    });
-
     try {
       // Carregar discovery document
-      await this.oauthService.loadDiscoveryDocument();
+      await this.oauthService?.loadDiscoveryDocument();
       await this.tryLogin();
     } catch (error) {
       console.error('Erro ao inicializar OAuth:', error);
@@ -74,7 +79,40 @@ export class AuthService {
       this.loadingSignal.set(false);
     }
 
-    // Monitorar eventos de autenticação
+    this.subscribeOAuthEvents();
+  }
+
+  private configureOAuth(): boolean {
+    if (!this.oauthService) {
+      return false;
+    }
+
+    if (this.oauthConfigured) {
+      return true;
+    }
+
+    this.oauthService.configure({
+      issuer: environment.auth.issuer,
+      clientId: environment.auth.clientId,
+      redirectUri: environment.auth.redirectUri,
+      postLogoutRedirectUri: environment.auth.postLogoutRedirectUri,
+      responseType: environment.auth.responseType,
+      scope: environment.auth.scope,
+      showDebugInformation: environment.auth.showDebugInformation,
+      strictDiscoveryDocumentValidation: environment.auth.strictDiscoveryDocumentValidation,
+      sessionChecksEnabled: environment.auth.sessionChecksEnabled,
+      silentRefreshRedirectUri: environment.auth.silentRefreshRedirectUri,
+    });
+
+    this.oauthConfigured = true;
+    return true;
+  }
+
+  private subscribeOAuthEvents(): void {
+    if (!this.oauthService || this.oauthEventsSubscribed) {
+      return;
+    }
+
     this.oauthService.events.subscribe((event) => {
       if (event.type === 'token_received') {
         this.updateAuthState();
@@ -88,6 +126,19 @@ export class AuthService {
         this.updateAuthState();
       }
     });
+
+    this.oauthEventsSubscribed = true;
+  }
+
+  setMockMode(useMock: boolean): void {
+    localStorage.setItem(AUTH_MODE_STORAGE_KEY, useMock ? 'mock' : 'keycloak');
+    this.isMockModeSignal.set(useMock);
+    this.isAuthenticatedSignal.set(false);
+    this.userSignal.set(null);
+  }
+
+  toggleMockMode(): void {
+    this.setMockMode(!this.isMockMode());
   }
 
   private async tryLogin() {
@@ -137,23 +188,39 @@ export class AuthService {
     await this.initializationPromise;
   }
 
-  login(returnUrl?: string) {
+  login(returnUrl?: string, credentials?: { username: string; password: string }): boolean {
     if (returnUrl) {
       this.setReturnUrl(returnUrl);
     }
 
     if (this.isMockMode()) {
+      const mockUser = environment.auth.mockUser;
+      const username = credentials?.username.trim().toLowerCase();
+      const password = credentials?.password;
+      const matchesUsername =
+        username === mockUser.email.toLowerCase() ||
+        username === mockUser.preferred_username.toLowerCase();
+      const matchesPassword = password === mockUser.password;
+
+      if (!matchesUsername || !matchesPassword) {
+        this.isAuthenticatedSignal.set(false);
+        this.userSignal.set(null);
+        return false;
+      }
+
       this.isAuthenticatedSignal.set(true);
-      this.userSignal.set(environment.auth.mockUser);
-      return;
+      this.userSignal.set(mockUser);
+      return true;
     }
 
-    if (!this.oauthService) {
+    if (!this.configureOAuth()) {
       console.error('OAuthService indisponível para iniciar login.');
-      return;
+      return false;
     }
 
-    this.oauthService.initCodeFlow();
+    this.subscribeOAuthEvents();
+    this.oauthService?.initCodeFlow();
+    return true;
   }
 
   logout() {

@@ -5,48 +5,72 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { mergeClasses, type ClassValue } from '@/shared/utils/merge-classes';
 
 export type ButtonVariant = 'default' | 'secondary' | 'destructive' | 'ghost' | 'outline' | 'link';
-export type ButtonSize = 'default' | 'sm' | 'md' | 'lg' | 'icon';
+export type ButtonSize =
+  | 'default'
+  | 'xs'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'icon'
+  | 'icon-xs'
+  | 'icon-sm'
+  | 'icon-lg';
+export type ButtonShape = 'default' | 'circle' | 'square';
 
 const buttonBaseClasses =
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-tight transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-55';
+  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-lg border border-transparent bg-clip-padding text-sm font-medium focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none shrink-0 [&_svg]:shrink-0 outline-none group/button select-none";
 
 const buttonVariantClasses: Record<ButtonVariant, string> = {
-  default:
-    'bg-[linear-gradient(135deg,#ff7a3d_0%,#ff5a36_100%)] text-white shadow-[0_14px_30px_rgba(255,107,53,0.26)] hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(255,107,53,0.34)] dark:shadow-[0_14px_36px_rgba(255,115,60,0.24)]',
+  default: 'bg-primary text-primary-foreground hover:bg-primary/80',
   secondary:
-    'border border-stone-200 bg-white/88 text-stone-800 shadow-[0_8px_22px_rgba(120,70,34,0.08)] hover:-translate-y-0.5 hover:bg-stone-50 dark:border-white/12 dark:bg-white/8 dark:text-stone-100 dark:shadow-[0_8px_24px_rgba(0,0,0,0.28)] dark:hover:bg-white/12',
+    'bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground',
   destructive:
-    'bg-[linear-gradient(135deg,#ef4444_0%,#dc2626_100%)] text-white shadow-[0_14px_28px_rgba(220,38,38,0.22)] hover:-translate-y-0.5 dark:shadow-[0_14px_32px_rgba(220,38,38,0.26)]',
+    'bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30',
   ghost:
-    'bg-transparent text-stone-700 hover:bg-white/70 hover:text-stone-950 dark:text-stone-200 dark:hover:bg-white/10 dark:hover:text-white',
+    'hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground',
   outline:
-    'border border-stone-200 bg-transparent text-stone-800 hover:-translate-y-0.5 hover:bg-white/70 dark:border-white/12 dark:text-stone-100 dark:hover:bg-white/10',
-  link: 'bg-transparent px-0 text-orange-600 underline-offset-4 hover:underline shadow-none dark:text-orange-300',
+    'border-border bg-background hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
+  link: 'text-primary underline-offset-4 hover:underline',
 };
 
 const buttonSizeClasses: Record<ButtonSize, string> = {
-  sm: 'min-h-10 px-4 text-sm',
-  default: 'min-h-12 px-5 text-sm sm:text-[15px]',
-  md: 'min-h-12 px-5 text-sm sm:text-[15px]',
-  lg: 'min-h-14 px-6 text-base',
-  icon: 'h-11 w-11 rounded-full px-0',
+  default: 'h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
+  xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+  sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+  md: 'h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
+  lg: 'h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3',
+  icon: 'size-8',
+  'icon-xs': "size-6 rounded-[min(var(--radius-md),10px)] [&_svg:not([class*='size-'])]:size-3",
+  'icon-sm': 'size-7 rounded-[min(var(--radius-md),12px)]',
+  'icon-lg': 'size-9',
+};
+
+const buttonShapeClasses: Record<ButtonShape, string> = {
+  default: 'rounded-md',
+  circle: 'rounded-full',
+  square: 'rounded-none',
 };
 
 export function getButtonClasses(
   variant: ButtonVariant,
   size: ButtonSize,
   fullWidth: boolean,
+  loading: boolean,
+  disabled: boolean,
+  shape: ButtonShape,
   className?: ClassValue,
 ) {
   return mergeClasses(
     buttonBaseClasses,
     buttonVariantClasses[variant],
     buttonSizeClasses[size],
+    buttonShapeClasses[shape],
     fullWidth && 'w-full',
+    loading && 'pointer-events-none opacity-50',
+    disabled && 'pointer-events-none opacity-50',
     className,
   );
 }
@@ -54,26 +78,44 @@ export function getButtonClasses(
 @Component({
   selector: 'button[z-button], a[z-button]',
   standalone: true,
-  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
     '[attr.type]': 'resolvedType()',
     '[attr.disabled]': 'resolvedDisabled()',
-    '[attr.aria-disabled]': 'disabled() ? "true" : null',
+    '[attr.aria-disabled]': 'isDisabled() ? "true" : null',
+    '[attr.data-disabled]': 'isDisabled() ? "true" : null',
   },
-  template: ` <ng-content /> `,
+  template: `
+    @if (zLoading()) {
+      <span class="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden="true"></span>
+    }
+    <ng-content />
+  `,
 })
 export class ButtonComponent {
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly zType = input<ButtonVariant>('default');
   readonly zSize = input<ButtonSize>('default');
+  readonly zShape = input<ButtonShape>('default');
   readonly zFull = input(false, { transform: booleanAttribute });
+  readonly zLoading = input(false, { transform: booleanAttribute });
+  readonly zDisabled = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly class = input<ClassValue>('', { alias: 'class' });
 
+  protected readonly isDisabled = computed(() => this.disabled() || this.zDisabled());
+
   protected readonly hostClasses = computed(() =>
-    getButtonClasses(this.zType(), this.zSize(), this.zFull(), this.class()),
+    getButtonClasses(
+      this.zType(),
+      this.zSize(),
+      this.zFull(),
+      this.zLoading(),
+      this.isDisabled(),
+      this.zShape(),
+      this.class(),
+    ),
   );
 
   protected resolvedType() {
@@ -81,6 +123,6 @@ export class ButtonComponent {
   }
 
   protected resolvedDisabled() {
-    return this.disabled() ? true : null;
+    return this.isDisabled() ? '' : null;
   }
 }

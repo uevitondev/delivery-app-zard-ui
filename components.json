@@ -7,7 +7,7 @@
     "css": "src/styles.css",
     "baseColor": "neutral"
   },
-  "baseUrl": "./",
+  "baseUrl": "src/app",
   "aliases": {
     "components": "@/shared/components",
     "utils": "@/shared/utils",

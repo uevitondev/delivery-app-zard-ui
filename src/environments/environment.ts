@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   auth: {
-    useMock: false,
+    useMock: true,
     issuer: 'http://localhost:8080/realms/delivery-platform',
     clientId: 'frontend-app',
     scope: 'web-origins openid email profile',
@@ -17,6 +17,7 @@ export const environment = {
       email: 'demo@deliveryapp.com',
       name: 'Demo User',
       preferred_username: 'demo_user',
+      password: 'demo123',
     },
   },
 };
