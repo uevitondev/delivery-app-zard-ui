@@ -1,6 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { Address } from '@/shared/models';
-import { loadFromStorage, saveToStorage } from '@/shared/utils';
+import { zStorageSignal } from '@/shared/utils';
 import { AddressBookPort } from '../contracts/app.contracts';
 
 const DEFAULT_ADDRESSES: Address[] = [
@@ -27,22 +27,20 @@ const DEFAULT_ADDRESSES: Address[] = [
   },
 ];
 
-const ADDRESSES_STORAGE_KEY = 'deliveryapp.addresses';
-const SELECTED_ADDRESS_STORAGE_KEY = 'deliveryapp.selectedAddressId';
-
 @Injectable({
   providedIn: 'root',
 })
 export class AddressService implements AddressBookPort {
-  // Signals
-  private readonly addressesSignal = signal<Address[]>(
-    loadFromStorage<Address[]>(ADDRESSES_STORAGE_KEY, DEFAULT_ADDRESSES, (addresses) =>
-      this.normalizeAddresses(addresses),
-    ),
+  // State com persistência automática via zStorageSignal
+  private readonly addressesSignal = zStorageSignal<Address[]>(
+    'deliveryapp.addresses',
+    DEFAULT_ADDRESSES,
+    (addresses) => this.normalizeAddresses(addresses),
   );
 
-  private readonly selectedAddressIdSignal = signal<string | null>(
-    loadFromStorage<string | null>(SELECTED_ADDRESS_STORAGE_KEY, null),
+  private readonly selectedAddressIdSignal = zStorageSignal<string | null>(
+    'deliveryapp.selectedAddressId',
+    null,
   );
 
   // Computed
@@ -64,8 +62,6 @@ export class AddressService implements AddressBookPort {
 
   constructor() {
     this.ensureSelectedAddressIsValid();
-    this.persistAddresses();
-    this.persistSelectedAddress();
   }
 
   // Métodos
@@ -73,7 +69,6 @@ export class AddressService implements AddressBookPort {
     const address = this.addressesSignal().find((addr) => addr.id === addressId);
     if (address) {
       this.selectedAddressIdSignal.set(addressId);
-      this.persistSelectedAddress();
     }
   }
 
@@ -84,7 +79,6 @@ export class AddressService implements AddressBookPort {
     };
 
     this.addressesSignal.update((addresses) => [...addresses, newAddress]);
-    this.persistAddresses();
     return newAddress;
   }
 
@@ -92,14 +86,11 @@ export class AddressService implements AddressBookPort {
     this.addressesSignal.update((addresses) =>
       addresses.map((addr) => (addr.id === id ? { ...addr, ...updates } : addr)),
     );
-    this.persistAddresses();
   }
 
   deleteAddress(id: string): void {
     this.addressesSignal.update((addresses) => addresses.filter((addr) => addr.id !== id));
     this.ensureSelectedAddressIsValid();
-    this.persistAddresses();
-    this.persistSelectedAddress();
   }
 
   setDefaultAddress(id: string): void {
@@ -110,8 +101,6 @@ export class AddressService implements AddressBookPort {
       })),
     );
     this.ensureSelectedAddressIsValid();
-    this.persistAddresses();
-    this.persistSelectedAddress();
   }
 
   private ensureSelectedAddressIsValid() {
@@ -133,13 +122,5 @@ export class AddressService implements AddressBookPort {
       ...address,
       isDefault: hasDefault ? address.isDefault : index === 0,
     }));
-  }
-
-  private persistAddresses() {
-    saveToStorage(ADDRESSES_STORAGE_KEY, this.addressesSignal());
-  }
-
-  private persistSelectedAddress() {
-    saveToStorage(SELECTED_ADDRESS_STORAGE_KEY, this.selectedAddressIdSignal());
   }
 }

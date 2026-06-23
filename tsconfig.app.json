@@ -5,6 +5,7 @@
     "rootDir": "./src",
     "types": [],
     "paths": {
+      "@/*": ["./src/app/*"],
       "@app/*": ["./src/app/*"],
       "@lib/*": ["./src/lib/*"],
       "@components/*": ["./src/components/*"]

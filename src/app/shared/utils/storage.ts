@@ -32,3 +32,16 @@ export function saveToStorage<T>(key: string, value: T) {
 function isStorageAvailable() {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 }
+
+import { signal, effect, WritableSignal } from '@angular/core';
+
+export function zStorageSignal<T>(key: string, fallback: T, revive?: (value: T) => T): WritableSignal<T> {
+  const initialValue = loadFromStorage(key, fallback, revive);
+  const sig = signal<T>(initialValue);
+
+  effect(() => {
+    saveToStorage(key, sig());
+  });
+
+  return sig;
+}

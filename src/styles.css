@@ -244,3 +244,82 @@
   border-radius: 5px;
   background: var(--muted);
 }
+
+/* View Transitions API - Animações customizadas */
+@layer transitions {
+  /* Animação de fade padrão */
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Animação de slide da direita (para detalhes) */
+  @keyframes slide-from-right {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Animação de slide da esquerda (para voltar) */
+  @keyframes slide-from-left {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Animação de fade + scale (para checkout) */
+  @keyframes fade-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Animação de fade + scale up (para modais) */
+  @keyframes fade-scale-up {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* View Transition Names para elementos compartilhados */
+  .restaurant-card-image {
+    view-transition-name: restaurant-image;
+  }
+
+  .restaurant-card-title {
+    view-transition-name: restaurant-title;
+  }
+
+  /* Configuração de duração das transições */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.3s;
+  }
+
+  /* Suavizar transições de imagem */
+  ::view-transition-old(restaurant-image),
+  ::view-transition-new(restaurant-image) {
+    animation-duration: 0.4s;
+    animation-timing-function: ease-in-out;
+  }
+}

@@ -1,11 +1,9 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { AuthService } from './auth.service';
 import { RestaurantService } from './restaurant.service';
-import { loadFromStorage, saveToStorage } from '@/shared/utils';
+import { zStorageSignal } from '@/shared/utils';
 import { Coupon, MenuItem, PaymentMethod, PaymentMethodType, UserProfile } from '@/shared/models';
 import { ProfileStorePort } from '../contracts/app.contracts';
-
-const PROFILE_STORAGE_KEY = 'deliveryapp.profile';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +12,10 @@ export class ProfileService implements ProfileStorePort {
   private readonly authService = inject(AuthService);
   private readonly restaurantService = inject(RestaurantService);
 
-  private readonly profileSignal = signal<UserProfile>(this.hydrateProfile());
+  // State com persistência automática via zStorageSignal
+  private readonly profileSignal = zStorageSignal<UserProfile>('deliveryapp.profile', this.getFallbackProfile(), (storedProfile) =>
+    this.reviveProfile(storedProfile),
+  );
 
   readonly profile = computed(() => this.profileSignal());
   readonly paymentMethods = computed(() => this.profileSignal().paymentMethods);
@@ -167,9 +168,30 @@ export class ProfileService implements ProfileStorePort {
     return this.paymentMethods().find((method) => method.isDefault) ?? this.paymentMethods()[0] ?? null;
   }
 
-  private hydrateProfile(): UserProfile {
+  private reviveProfile(storedProfile: UserProfile | null): UserProfile {
+    const fallbackProfile = this.getFallbackProfile();
+
+    if (!storedProfile) {
+      return fallbackProfile;
+    }
+
+    return {
+      ...fallbackProfile,
+      ...storedProfile,
+      createdAt: new Date(storedProfile.createdAt),
+      hasCompletedOnboarding: storedProfile.hasCompletedOnboarding ?? fallbackProfile.hasCompletedOnboarding,
+      preferredCuisine: storedProfile.preferredCuisine ?? fallbackProfile.preferredCuisine,
+      paymentMethods: this.ensureDefaultPaymentMethod(storedProfile.paymentMethods ?? fallbackProfile.paymentMethods),
+      favoriteRestaurants: storedProfile.favoriteRestaurants ?? fallbackProfile.favoriteRestaurants,
+      favoriteMenuItems: storedProfile.favoriteMenuItems ?? fallbackProfile.favoriteMenuItems,
+      savedCouponCodes: storedProfile.savedCouponCodes ?? fallbackProfile.savedCouponCodes,
+      recentSearches: storedProfile.recentSearches ?? fallbackProfile.recentSearches,
+    };
+  }
+
+  private getFallbackProfile(): UserProfile {
     const authUser = this.authService.user();
-    const fallbackProfile: UserProfile = {
+    return {
       id: authUser?.sub ?? 'mock-user',
       email: authUser?.email ?? 'demo@deliveryapp.com',
       name: authUser?.name ?? 'Demo User',
@@ -198,19 +220,6 @@ export class ProfileService implements ProfileStorePort {
       createdAt: new Date(),
       addresses: [],
     };
-
-    return loadFromStorage<UserProfile>(PROFILE_STORAGE_KEY, fallbackProfile, (storedProfile) => ({
-      ...fallbackProfile,
-      ...storedProfile,
-      createdAt: new Date(storedProfile.createdAt),
-      hasCompletedOnboarding: storedProfile.hasCompletedOnboarding ?? fallbackProfile.hasCompletedOnboarding,
-      preferredCuisine: storedProfile.preferredCuisine ?? fallbackProfile.preferredCuisine,
-      paymentMethods: this.ensureDefaultPaymentMethod(storedProfile.paymentMethods ?? fallbackProfile.paymentMethods),
-      favoriteRestaurants: storedProfile.favoriteRestaurants ?? fallbackProfile.favoriteRestaurants,
-      favoriteMenuItems: storedProfile.favoriteMenuItems ?? fallbackProfile.favoriteMenuItems,
-      savedCouponCodes: storedProfile.savedCouponCodes ?? fallbackProfile.savedCouponCodes,
-      recentSearches: storedProfile.recentSearches ?? fallbackProfile.recentSearches,
-    }));
   }
 
   private ensureDefaultPaymentMethod(paymentMethods: PaymentMethod[]) {
@@ -232,6 +241,5 @@ export class ProfileService implements ProfileStorePort {
     };
 
     this.profileSignal.set(nextProfile);
-    saveToStorage(PROFILE_STORAGE_KEY, nextProfile);
   }
 }

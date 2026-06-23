@@ -1,0 +1,61 @@
+<div class="error-container" *ngIf="error(); else onlineContent">
+  <div class="error-content">
+    <div class="error-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    
+    <h1 class="error-title">Ops! Algo deu errado</h1>
+    
+    <p class="error-message">
+      {{ error()?.message }}
+    </p>
+
+    <div class="error-details" *ngIf="error()?.stack">
+      <details>
+        <summary>Detalhes técnicos</summary>
+        <pre>{{ error()?.stack }}</pre>
+      </details>
+    </div>
+
+    <div class="error-actions">
+      <button class="btn btn-primary" (click)="retry()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Tentar Novamente
+      </button>
+
+      <button class="btn btn-secondary" (click)="goHome()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Voltar ao Início
+      </button>
+    </div>
+
+    <div class="error-footer" *ngIf="!isOnline()">
+      <p class="offline-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+          <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+          <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+          <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+          <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+          <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+        Você está offline. Verifique sua conexão.
+      </p>
+    </div>
+  </div>
+</div>
+
+<ng-template #onlineContent>
+  <router-outlet></router-outlet>
+</ng-template>

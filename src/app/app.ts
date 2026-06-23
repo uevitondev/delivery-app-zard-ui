@@ -1,11 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ButtonComponent, DevBadgeComponent, ToasterComponent } from '@/shared/components';
+import { ButtonComponent, ConnectivityBannerComponent, DevBadgeComponent, ToasterComponent } from '@/shared/components';
 import { ZardDarkModeService } from '@/shared/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DevBadgeComponent, ToasterComponent, ButtonComponent],
+  imports: [RouterOutlet, DevBadgeComponent, ToasterComponent, ButtonComponent, ConnectivityBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

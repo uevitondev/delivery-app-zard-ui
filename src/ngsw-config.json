@@ -1,0 +1,55 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app-static",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "app-images",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "urls": [
+          "https://via.placeholder.com/**",
+          "data:image/**"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "restaurant-api",
+      "urls": [
+        "https://api.example.com/restaurants/**",
+        "https://api.example.com/menu/**"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "5m",
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "user-data",
+      "urls": [
+        "https://api.example.com/profile/**",
+        "https://api.example.com/orders/**"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 50,
+        "maxAge": "10m",
+        "timeout": "5s"
+      }
+    }
+  ]
+}

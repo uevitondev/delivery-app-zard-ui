@@ -7,13 +7,7 @@
     "rootDir": "./src",
     "types": [
       "vitest/globals"
-    ],
-    "baseUrl": "src/app",
-    "paths": {
-      "@/*": [
-        "*"
-      ]
-    }
+    ]
   },
   "include": [
     "src/**/*.d.ts",

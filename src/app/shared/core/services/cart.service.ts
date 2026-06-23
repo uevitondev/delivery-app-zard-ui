@@ -1,10 +1,8 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { Cart, CartItem, MenuItem, Order, Restaurant } from '@/shared/models';
 import { RestaurantService } from '@/shared/core/services/restaurant.service';
-import { loadFromStorage, saveToStorage } from '@/shared/utils';
+import { zStorageSignal } from '@/shared/utils';
 import { CartPort } from '../contracts/app.contracts';
-
-const CART_STORAGE_KEY = 'deliveryapp.cart';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +10,10 @@ const CART_STORAGE_KEY = 'deliveryapp.cart';
 export class CartService implements CartPort {
   private readonly restaurantService = inject(RestaurantService);
 
-  // State
-  private readonly cartSignal = signal<Cart | null>(this.hydrateCart());
+  // State com persistência automática via zStorageSignal
+  private readonly cartSignal = zStorageSignal<Cart | null>('deliveryapp.cart', null, (storedCart) =>
+    this.reviveCart(storedCart),
+  );
 
   // Public computed values
   readonly cart = computed(() => this.cartSignal());
@@ -24,10 +24,6 @@ export class CartService implements CartPort {
   readonly tax = computed(() => this.cartSignal()?.tax ?? 0);
   readonly total = computed(() => this.cartSignal()?.total ?? 0);
   readonly isEmpty = computed(() => this.items().length === 0);
-
-  constructor() {
-    this.persistCart();
-  }
 
   addItem(menuItem: MenuItem, quantity: number = 1, notes?: string) {
     const currentCart = this.cartSignal();
@@ -97,7 +93,6 @@ export class CartService implements CartPort {
 
   clearCart() {
     this.cartSignal.set(null);
-    this.persistCart();
   }
 
   loadOrder(order: Order) {
@@ -191,7 +186,6 @@ export class CartService implements CartPort {
       tax: 0,
       total: 0,
     });
-    this.persistCart();
   }
 
   private updateCart() {
@@ -207,59 +201,49 @@ export class CartService implements CartPort {
     cart.total = total;
 
     this.cartSignal.set({ ...cart });
-    this.persistCart();
   }
 
-  private hydrateCart(): Cart | null {
-    return loadFromStorage<Cart | null>(CART_STORAGE_KEY, null, (storedCart) => {
-      if (!storedCart) {
-        return null;
-      }
+  private reviveCart(storedCart: Cart | null): Cart | null {
+    if (!storedCart) {
+      return null;
+    }
 
-      const restaurant = this.restaurantService.getRestaurantById(storedCart.restaurantId);
-      if (!restaurant) {
-        return null;
-      }
+    const restaurant = this.restaurantService.getRestaurantById(storedCart.restaurantId);
+    if (!restaurant) {
+      return null;
+    }
 
-      const items = storedCart.items
-        .map((item) => {
-          const menuItem = this.restaurantService.getMenuItem(
-            storedCart.restaurantId,
-            item.menuItem.id,
-          );
+    const items = storedCart.items
+      .map((item) => {
+        const menuItem = this.restaurantService.getMenuItem(storedCart.restaurantId, item.menuItem.id);
 
-          if (!menuItem) {
-            return null;
-          }
+        if (!menuItem) {
+          return null;
+        }
 
-          return {
-            ...item,
-            menuItem,
-            subtotal: menuItem.price * item.quantity,
-          };
-        })
-        .filter((item): item is CartItem => item !== null);
+        return {
+          ...item,
+          menuItem,
+          subtotal: menuItem.price * item.quantity,
+        };
+      })
+      .filter((item): item is CartItem => item !== null);
 
-      if (items.length === 0) {
-        return null;
-      }
+    if (items.length === 0) {
+      return null;
+    }
 
-      const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
-      const tax = subtotal * 0.1;
+    const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
+    const tax = subtotal * 0.1;
 
-      return {
-        restaurantId: storedCart.restaurantId,
-        restaurant,
-        items,
-        subtotal,
-        deliveryFee: restaurant.deliveryFee,
-        tax,
-        total: subtotal + restaurant.deliveryFee + tax,
-      };
-    });
-  }
-
-  private persistCart() {
-    saveToStorage(CART_STORAGE_KEY, this.cartSignal());
+    return {
+      restaurantId: storedCart.restaurantId,
+      restaurant,
+      items,
+      subtotal,
+      deliveryFee: restaurant.deliveryFee,
+      tax,
+      total: subtotal + restaurant.deliveryFee + tax,
+    };
   }
 }
