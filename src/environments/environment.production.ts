@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   auth: {
-    useMock: false,
+    useMock: true,
     issuer: 'http://localhost:8080/realms/delivery-platform',
     clientId: 'frontend-app',
     scope: 'openid profile email roles',
