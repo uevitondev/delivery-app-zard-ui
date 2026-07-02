@@ -29,7 +29,7 @@ import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
 
 import type { ZardDialogRef } from './dialog-ref';
 import { dialogVariants } from './dialog.variants';
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
+import { ZardButtonComponent } from '@/shared/components/button';
 
 export type OnClickCallback<T> = (instance: T) => false | void | object;
 export class ZardDialogOptions<T, U> {

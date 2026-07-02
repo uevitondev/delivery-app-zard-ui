@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   forwardRef,
   input,
   signal,
@@ -66,13 +67,23 @@ export class SelectRootComponent implements ControlValueAccessor, OnInit {
   options = input<SelectOption[]>([]);
   placeholder = input<string>('');
   disabled = input<boolean>(false);
+  zValue = input<string | number | null>(null);
+  zLabel = input<string>('');
 
   valueChanged = output<string | number>();
+  zSelectionChange = output<string | number>();
 
   private onChange = (value: string | number) => {};
   private onTouched = () => {};
 
-  constructor(public context: SelectContext) {}
+  constructor(public context: SelectContext) {
+    effect(() => {
+      this.context.options.set(this.options());
+      this.context.placeholder.set(this.zLabel() || this.placeholder());
+      this.context.disabled.set(this.disabled());
+      this.context.selectedValue.set(this.zValue() ?? null);
+    });
+  }
 
   ngOnInit() {
     this.context.options.set(this.options());
@@ -100,6 +111,7 @@ export class SelectRootComponent implements ControlValueAccessor, OnInit {
     this.context.selectOption(value);
     this.onChange(value);
     this.valueChanged.emit(value);
+    this.zSelectionChange.emit(value);
     this.onTouched();
   }
 }

@@ -22,19 +22,17 @@ import { loaderVariants, type ZardLoaderVariants } from './loader.variants';
     </div>
   `,
   styles: `
-    @layer utilities {
-      @keyframes spinner {
-        0% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0.15;
-        }
+    @keyframes spinner {
+      0% {
+        opacity: 1;
       }
+      100% {
+        opacity: 0.15;
+      }
+    }
 
-      .animate-spinner {
-        animation: spinner 1.2s linear infinite;
-      }
+    .animate-spinner {
+      animation: spinner 1.2s linear infinite;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

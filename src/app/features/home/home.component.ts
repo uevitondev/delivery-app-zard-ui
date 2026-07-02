@@ -116,9 +116,9 @@ import { HomeFacade } from './home.facade';
           </section>
         }
 
-        <section class="mb-6 grid gap-4 lg:grid-cols-[1.5fr_0.9fr]">
+        <section class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[1.5fr_0.9fr]">
           <div class="app-surface overflow-hidden p-5 sm:p-7">
-            <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
               <div>
                 <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-700 dark:bg-orange-500/12 dark:text-orange-300">
                   entrega rapida, experiencia premium
@@ -488,29 +488,31 @@ import { HomeFacade } from './home.facade';
         </section>
       </main>
 
-      <nav class="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between rounded-full border border-white/70 bg-white/88 px-4 py-3 shadow-[0_18px_34px_rgba(118,60,24,0.18)] backdrop-blur-xl dark:border-white/10 dark:bg-[rgba(17,18,24,0.84)] dark:shadow-[0_18px_36px_rgba(0,0,0,0.34)] md:hidden">
-        <button class="flex flex-col items-center gap-1 text-xs font-semibold text-orange-600">
-          <span class="h-2 w-2 rounded-full bg-orange-500"></span>
-          Inicio
-        </button>
-        <button (click)="goToOrders()" class="text-xs font-semibold text-stone-500 dark:text-stone-400">Pedidos</button>
-        <button (click)="goToNotifications()" class="relative text-xs font-semibold text-stone-500 dark:text-stone-400">
-          Alertas
-          @if (notificationService.unreadCount() > 0) {
-            <span class="absolute -right-4 -top-2 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] text-white">
-              {{ notificationService.unreadCount() }}
-            </span>
-          }
-        </button>
-        <button (click)="goToCart()" class="relative text-xs font-semibold text-stone-500 dark:text-stone-400">
-          Carrinho
-          @if (cartService.itemCount() > 0) {
-            <span class="absolute -right-4 -top-2 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
-              {{ cartService.itemCount() }}
-            </span>
-          }
-        </button>
-        <button (click)="goToProfile()" class="text-xs font-semibold text-stone-500 dark:text-stone-400">Perfil</button>
+      <nav class="mobile-bottom-nav">
+        <div class="mobile-bottom-nav-inner">
+          <button class="flex flex-col items-center gap-1 text-xs font-semibold text-orange-600 touch-target">
+            <span class="h-2 w-2 rounded-full bg-orange-500"></span>
+            Inicio
+          </button>
+          <button (click)="goToOrders()" class="text-xs font-semibold text-stone-500 dark:text-stone-400 touch-target">Pedidos</button>
+          <button (click)="goToNotifications()" class="relative text-xs font-semibold text-stone-500 dark:text-stone-400 touch-target">
+            Alertas
+            @if (notificationService.unreadCount() > 0) {
+              <span class="absolute -right-3 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] text-white">
+                {{ notificationService.unreadCount() }}
+              </span>
+            }
+          </button>
+          <button (click)="goToCart()" class="relative text-xs font-semibold text-stone-500 dark:text-stone-400 touch-target">
+            Carrinho
+            @if (cartService.itemCount() > 0) {
+              <span class="absolute -right-3 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
+                {{ cartService.itemCount() }}
+              </span>
+            }
+          </button>
+          <button (click)="goToProfile()" class="text-xs font-semibold text-stone-500 dark:text-stone-400 touch-target">Perfil</button>
+        </div>
       </nav>
     </div>
   `,

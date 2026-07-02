@@ -7,13 +7,13 @@ import { calendarMonths } from '@/shared/components/calendar/calendar.utils';
 import { mergeClasses } from '@/shared/utils/merge-classes';
 
 import { calendarNavVariants } from './calendar.variants';
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
-import { ZardSelectItemComponent } from '@/shared/components/select/select-item.component';
-import { ZardSelectComponent } from '@/shared/components/select/select.component';
+import { ButtonComponent } from '@/shared/components/button/button.component';
+import { SelectItemComponent } from '@/shared/components/select/select-item.component';
+import { SelectRootComponent } from '@/shared/components/select/select-root.component';
 
 @Component({
   selector: 'z-calendar-navigation',
-  imports: [ZardButtonComponent, NgIcon, ZardSelectComponent, ZardSelectItemComponent],
+  imports: [ButtonComponent, NgIcon, SelectRootComponent, SelectItemComponent],
   template: `
     <div [class]="navClasses()">
       <button
@@ -142,19 +142,11 @@ export class ZardCalendarNavigationComponent {
     this.nextMonth.emit();
   }
 
-  protected onMonthChange(month: string | string[]): void {
-    if (Array.isArray(month)) {
-      console.warn('Calendar navigation received array for month selection, expected single value. Ignoring:', month);
-      return;
-    }
-    this.monthChange.emit(month);
+  protected onMonthChange(month: string | number): void {
+    this.monthChange.emit(month.toString());
   }
 
-  protected onYearChange(year: string | string[]): void {
-    if (Array.isArray(year)) {
-      console.warn('Calendar navigation received array for year selection, expected single value. Ignoring:', year);
-      return;
-    }
-    this.yearChange.emit(year);
+  protected onYearChange(year: string | number): void {
+    this.yearChange.emit(year.toString());
   }
 }

@@ -33,7 +33,7 @@ import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
 import type { ZardAlertDialogRef } from './alert-dialog-ref';
 import { ZardAlertDialogService } from './alert-dialog.service';
 import { alertDialogVariants } from './alert-dialog.variants';
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
+import { ButtonComponent } from '@/shared/components/button/button.component';
 
 export type OnClickCallback<T> = (instance: T) => false | void | object;
 
@@ -57,7 +57,7 @@ export class ZardAlertDialogOptions<T> {
 
 @Component({
   selector: 'z-alert-dialog',
-  imports: [OverlayModule, PortalModule, ZardButtonComponent, A11yModule, ZardIdDirective],
+  imports: [OverlayModule, PortalModule, ButtonComponent, A11yModule, ZardIdDirective],
   templateUrl: './alert-dialog.component.html',
   styles: `
     z-alert-dialog {
@@ -161,7 +161,7 @@ export class ZardAlertDialogComponent<T> extends BasePortalOutlet {
 }
 
 @NgModule({
-  imports: [ZardButtonComponent, ZardAlertDialogComponent, OverlayModule, PortalModule, A11yModule],
+  imports: [ButtonComponent, ZardAlertDialogComponent, OverlayModule, PortalModule, A11yModule],
   providers: [ZardAlertDialogService],
 })
 export class ZardAlertDialogModule {}

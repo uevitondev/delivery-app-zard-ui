@@ -1,0 +1,579 @@
+
+> deliveryapp-zardui@0.0.0 build
+> ng build --verbose
+
+[33m❯[39m Building...
+[1m[31m(node:11724) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)[39m[22m
+(node:11724) ExperimentalWarning: WASI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+X [ERROR] TS2724: '"@/shared/components/button/button.component"' has no exported member named 'ZardButtonComponent'. Did you mean 'ButtonComponent'? [plugin angular-compiler]
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:36:9:
+      36 │ import { ZardButtonComponent } from '@/shared/components/button/bu...
+         ╵          ~~~~~~~~~~~~~~~~~~~
+
+  'ButtonComponent' is declared here.
+
+    src/app/shared/components/button/button.component.ts:96:13:
+      96 │ export class ButtonComponent {
+         ╵              ~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:60:41:
+      60 │ ...Module, PortalModule, ZardButtonComponent, A11yModule, ZardIdDi...
+         ╵                          ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:60:41:
+      60 │ ...Module, PortalModule, ZardButtonComponent, A11yModule, ZardIdDi...
+         ╵                          ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: Value at position 0 in the NgModule.imports of ZardAlertDialogModule is not a reference
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:164:11:
+      164 │   imports: [ZardButtonComponent, ZardAlertDialogComponent, Overla...
+          ╵            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:164:12:
+      164 │   imports: [ZardButtonComponent, ZardAlertDialogComponent, Overla...
+          ╵             ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2724: '"@/shared/components/button/button.component"' has no exported member named 'ZardButtonComponent'. Did you mean 'ButtonComponent'? [plugin angular-compiler]
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:10:9:
+      10 │ import { ZardButtonComponent } from '@/shared/components/button/bu...
+         ╵          ~~~~~~~~~~~~~~~~~~~
+
+  'ButtonComponent' is declared here.
+
+    src/app/shared/components/button/button.component.ts:96:13:
+      96 │ export class ButtonComponent {
+         ╵              ~~~~~~~~~~~~~~~
+
+X [ERROR] TS2724: '"@/shared/components/select/select-item.component"' has no exported member named 'ZardSelectItemComponent'. Did you mean 'SelectItemComponent'? [plugin angular-compiler]
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:11:9:
+      11 │ import { ZardSelectItemComponent } from '@/shared/components/selec...
+         ╵          ~~~~~~~~~~~~~~~~~~~~~~~
+
+  'SelectItemComponent' is declared here.
+
+    src/app/shared/components/select/select-item.component.ts:41:13:
+      41 │ export class SelectItemComponent {
+         ╵              ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2724: '"@/shared/components/select/select.component"' has no exported member named 'ZardSelectComponent'. Did you mean 'SelectComponent'? [plugin angular-compiler]
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:12:9:
+      12 │ import { ZardSelectComponent } from '@/shared/components/select/se...
+         ╵          ~~~~~~~~~~~~~~~~~~~
+
+  'SelectComponent' is declared here.
+
+    src/app/shared/components/select/select.component.ts:56:13:
+      56 │ export class SelectComponent implements ControlValueAccessor {
+         ╵              ~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:12:
+      16 │   imports: [ZardButtonComponent, NgIcon, ZardSelectComponent, Zard...
+         ╵             ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:12:
+      16 │   imports: [ZardButtonComponent, NgIcon, ZardSelectComponent, Zard...
+         ╵             ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:41:
+      16 │ ...tonComponent, NgIcon, ZardSelectComponent, ZardSelectItemCompon...
+         ╵                          ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:41:
+      16 │ ...tonComponent, NgIcon, ZardSelectComponent, ZardSelectItemCompon...
+         ╵                          ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:62:
+      16 │ ...nComponent, NgIcon, ZardSelectComponent, ZardSelectItemComponent],
+         ╵                                             ~~~~~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:62:
+      16 │ ...nComponent, NgIcon, ZardSelectComponent, ZardSelectItemComponent],
+         ╵                                             ~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/carousel/carousel.component.ts:20:36:
+      20 │ import { ZardButtonComponent } from '@/shared/components/button';
+         ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/carousel/carousel.component.ts:32:36:
+      32 │   imports: [EmblaCarouselDirective, ZardButtonComponent, NgIcon],
+         ╵                                     ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/carousel/carousel.component.ts:32:36:
+      32 │   imports: [EmblaCarouselDirective, ZardButtonComponent, NgIcon],
+         ╵                                     ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/combobox/combobox.component.ts:26:65:
+      26 │ ..., type ZardButtonTypeVariants } from '@/shared/components/button';
+         ╵                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/combobox/combobox.component.ts:59:4:
+      59 │     ZardButtonComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/combobox/combobox.component.ts:59:4:
+      59 │     ZardButtonComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/date-picker/date-picker.component.ts:21:65:
+      21 │ ..., type ZardButtonTypeVariants } from '@/shared/components/button';
+         ╵                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/date-picker/date-picker.component.ts:48:20:
+      48 │   imports: [NgIcon, ZardButtonComponent, ZardCalendarComponent, Za...
+         ╵                     ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/date-picker/date-picker.component.ts:48:20:
+      48 │   imports: [NgIcon, ZardButtonComponent, ZardCalendarComponent, Za...
+         ╵                     ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2724: '"@/shared/components/button/button.component"' has no exported member named 'ZardButtonComponent'. Did you mean 'ButtonComponent'? [plugin angular-compiler]
+
+    src/app/shared/components/dialog/dialog.component.ts:32:9:
+      32 │ import { ZardButtonComponent } from '@/shared/components/button/bu...
+         ╵          ~~~~~~~~~~~~~~~~~~~
+
+  'ButtonComponent' is declared here.
+
+    src/app/shared/components/button/button.component.ts:96:13:
+      96 │ export class ButtonComponent {
+         ╵              ~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/dialog/dialog.component.ts:58:41:
+      58 │ ...ports: [OverlayModule, PortalModule, ZardButtonComponent, NgIcon],
+         ╵                                         ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/dialog/dialog.component.ts:58:41:
+      58 │ ...ports: [OverlayModule, PortalModule, ZardButtonComponent, NgIcon],
+         ╵                                         ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/dialog/dialog.imports.ts:4:36:
+      4 │ import { ZardButtonComponent } from '@/shared/components/button';
+        ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/input/input.directive' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/input-group/input-group.component.ts:30:35:
+      30 │ ...InputDirective } from '@/shared/components/input/input.directive';
+         ╵                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/input/input.variants' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/input-group/input-group.component.ts:31:43:
+      31 │ ...putSizeVariants } from '@/shared/components/input/input.variants';
+         ╵                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/pagination/pagination.component.ts:22:7:
+      22 │ } from '@/shared/components/button';
+         ╵        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/pagination/pagination.component.ts:68:12:
+      68 │   imports: [ZardButtonComponent],
+         ╵             ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/pagination/pagination.component.ts:68:12:
+      68 │   imports: [ZardButtonComponent],
+         ╵             ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/sheet/sheet.component.ts:29:36:
+      29 │ import { ZardButtonComponent } from '@/shared/components/button';
+         ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/sheet/sheet.component.ts:62:41:
+      62 │ ...ports: [OverlayModule, PortalModule, ZardButtonComponent, NgIcon],
+         ╵                                         ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/sheet/sheet.component.ts:62:41:
+      62 │ ...ports: [OverlayModule, PortalModule, ZardButtonComponent, NgIcon],
+         ╵                                         ~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] TS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/shared/components/tabs/tabs.component.ts:30:36:
+      30 │ import { ZardButtonComponent } from '@/shared/components/button';
+         ╵                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+X [ERROR] NG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/shared/components/tabs/tabs.component.ts:59:30:
+      59 │   imports: [NgTemplateOutlet, ZardButtonComponent, NgIcon],
+         ╵                               ~~~~~~~~~~~~~~~~~~~
+
+  Unknown reference.
+
+    src/app/shared/components/tabs/tabs.component.ts:59:30:
+      59 │   imports: [NgTemplateOutlet, ZardButtonComponent, NgIcon],
+         ╵                               ~~~~~~~~~~~~~~~~~~~
+
+26 errors
+[32m✔[39m Building...
+Application bundle generation failed. [5.813 seconds] - 2026-07-02T19:08:49.370Z
+
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2724: '"@/shared/components/button/button.component"' has no exported member named 'ZardButtonComponent'. Did you mean 'ButtonComponent'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:36:9:
+[37m      36 │ import { [32mZardButtonComponent[37m } from '@/shared/components/button/bu...
+         ╵          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  'ButtonComponent' is declared here.
+
+    src/app/shared/components/button/button.component.ts:96:13:
+[37m      96 │ export class [32mButtonComponent[37m {
+         ╵              [32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:60:41:
+[37m      60 │ ...Module, PortalModule, [32mZardButtonComponent[37m, A11yModule, ZardIdDi...
+         ╵                          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:60:41:
+[37m      60 │ ...Module, PortalModule, [32mZardButtonComponent[37m, A11yModule, ZardIdDi...
+         ╵                          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: Value at position 0 in the NgModule.imports of ZardAlertDialogModule is not a reference
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:164:11:
+[37m      164 │   imports: [32m[ZardButtonComponent, ZardAlertDialogComponent, Overla[37m...
+          ╵            [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/alert-dialog/alert-dialog.component.ts:164:12:
+[37m      164 │   imports: [[32mZardButtonComponent[37m, ZardAlertDialogComponent, Overla...
+          ╵             [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2724: '"@/shared/components/button/button.component"' has no exported member named 'ZardButtonComponent'. Did you mean 'ButtonComponent'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:10:9:
+[37m      10 │ import { [32mZardButtonComponent[37m } from '@/shared/components/button/bu...
+         ╵          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  'ButtonComponent' is declared here.
+
+    src/app/shared/components/button/button.component.ts:96:13:
+[37m      96 │ export class [32mButtonComponent[37m {
+         ╵              [32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2724: '"@/shared/components/select/select-item.component"' has no exported member named 'ZardSelectItemComponent'. Did you mean 'SelectItemComponent'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:11:9:
+[37m      11 │ import { [32mZardSelectItemComponent[37m } from '@/shared/components/selec...
+         ╵          [32m~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  'SelectItemComponent' is declared here.
+
+    src/app/shared/components/select/select-item.component.ts:41:13:
+[37m      41 │ export class [32mSelectItemComponent[37m {
+         ╵              [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2724: '"@/shared/components/select/select.component"' has no exported member named 'ZardSelectComponent'. Did you mean 'SelectComponent'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:12:9:
+[37m      12 │ import { [32mZardSelectComponent[37m } from '@/shared/components/select/se...
+         ╵          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  'SelectComponent' is declared here.
+
+    src/app/shared/components/select/select.component.ts:56:13:
+[37m      56 │ export class [32mSelectComponent[37m implements ControlValueAccessor {
+         ╵              [32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:12:
+[37m      16 │   imports: [[32mZardButtonComponent[37m, NgIcon, ZardSelectComponent, Zard...
+         ╵             [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:12:
+[37m      16 │   imports: [[32mZardButtonComponent[37m, NgIcon, ZardSelectComponent, Zard...
+         ╵             [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:41:
+[37m      16 │ ...tonComponent, NgIcon, [32mZardSelectComponent[37m, ZardSelectItemCompon...
+         ╵                          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:41:
+[37m      16 │ ...tonComponent, NgIcon, [32mZardSelectComponent[37m, ZardSelectItemCompon...
+         ╵                          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:62:
+[37m      16 │ ...nComponent, NgIcon, ZardSelectComponent, [32mZardSelectItemComponent[37m],
+         ╵                                             [32m~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/calendar/calendar-navigation.component.ts:16:62:
+[37m      16 │ ...nComponent, NgIcon, ZardSelectComponent, [32mZardSelectItemComponent[37m],
+         ╵                                             [32m~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/carousel/carousel.component.ts:20:36:
+[37m      20 │ import { ZardButtonComponent } from [32m'@/shared/components/button'[37m;
+         ╵                                     [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/carousel/carousel.component.ts:32:36:
+[37m      32 │   imports: [EmblaCarouselDirective, [32mZardButtonComponent[37m, NgIcon],
+         ╵                                     [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/carousel/carousel.component.ts:32:36:
+[37m      32 │   imports: [EmblaCarouselDirective, [32mZardButtonComponent[37m, NgIcon],
+         ╵                                     [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/combobox/combobox.component.ts:26:65:
+[37m      26 │ ..., type ZardButtonTypeVariants } from [32m'@/shared/components/button'[37m;
+         ╵                                         [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/combobox/combobox.component.ts:59:4:
+[37m      59 │     [32mZardButtonComponent[37m,
+         ╵     [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/combobox/combobox.component.ts:59:4:
+[37m      59 │     [32mZardButtonComponent[37m,
+         ╵     [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/date-picker/date-picker.component.ts:21:65:
+[37m      21 │ ..., type ZardButtonTypeVariants } from [32m'@/shared/components/button'[37m;
+         ╵                                         [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/date-picker/date-picker.component.ts:48:20:
+[37m      48 │   imports: [NgIcon, [32mZardButtonComponent[37m, ZardCalendarComponent, Za...
+         ╵                     [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/date-picker/date-picker.component.ts:48:20:
+[37m      48 │   imports: [NgIcon, [32mZardButtonComponent[37m, ZardCalendarComponent, Za...
+         ╵                     [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2724: '"@/shared/components/button/button.component"' has no exported member named 'ZardButtonComponent'. Did you mean 'ButtonComponent'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/dialog/dialog.component.ts:32:9:
+[37m      32 │ import { [32mZardButtonComponent[37m } from '@/shared/components/button/bu...
+         ╵          [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  'ButtonComponent' is declared here.
+
+    src/app/shared/components/button/button.component.ts:96:13:
+[37m      96 │ export class [32mButtonComponent[37m {
+         ╵              [32m~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/dialog/dialog.component.ts:58:41:
+[37m      58 │ ...ports: [OverlayModule, PortalModule, [32mZardButtonComponent[37m, NgIcon],
+         ╵                                         [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/dialog/dialog.component.ts:58:41:
+[37m      58 │ ...ports: [OverlayModule, PortalModule, [32mZardButtonComponent[37m, NgIcon],
+         ╵                                         [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/dialog/dialog.imports.ts:4:36:
+[37m      4 │ import { ZardButtonComponent } from [32m'@/shared/components/button'[37m;
+        ╵                                     [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/input/input.directive' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/input-group/input-group.component.ts:30:35:
+[37m      30 │ ...InputDirective } from [32m'@/shared/components/input/input.directive'[37m;
+         ╵                          [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/input/input.variants' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/input-group/input-group.component.ts:31:43:
+[37m      31 │ ...putSizeVariants } from [32m'@/shared/components/input/input.variants'[37m;
+         ╵                           [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/pagination/pagination.component.ts:22:7:
+[37m      22 │ } from [32m'@/shared/components/button'[37m;
+         ╵        [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/pagination/pagination.component.ts:68:12:
+[37m      68 │   imports: [[32mZardButtonComponent[37m],
+         ╵             [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/pagination/pagination.component.ts:68:12:
+[37m      68 │   imports: [[32mZardButtonComponent[37m],
+         ╵             [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/sheet/sheet.component.ts:29:36:
+[37m      29 │ import { ZardButtonComponent } from [32m'@/shared/components/button'[37m;
+         ╵                                     [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/sheet/sheet.component.ts:62:41:
+[37m      62 │ ...ports: [OverlayModule, PortalModule, [32mZardButtonComponent[37m, NgIcon],
+         ╵                                         [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/sheet/sheet.component.ts:62:41:
+[37m      62 │ ...ports: [OverlayModule, PortalModule, [32mZardButtonComponent[37m, NgIcon],
+         ╵                                         [32m~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2307: Cannot find module '@/shared/components/button' or its corresponding type declarations.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/tabs/tabs.component.ts:30:36:
+[37m      30 │ import { ZardButtonComponent } from [32m'@/shared/components/button'[37m;
+         ╵                                     [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG1010: 'imports' must be an array of components, directives, pipes, or NgModules.
+  Value could not be determined statically.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/tabs/tabs.component.ts:59:30:
+[37m      59 │   imports: [NgTemplateOutlet, [32mZardButtonComponent[37m, NgIcon],
+         ╵                               [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Unknown reference.
+
+    src/app/shared/components/tabs/tabs.component.ts:59:30:
+[37m      59 │   imports: [NgTemplateOutlet, [32mZardButtonComponent[37m, NgIcon],
+         ╵                               [32m~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m

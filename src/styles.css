@@ -1,9 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer ng-icon, theme, base, components, utilities;
-@import 'tailwindcss';
-@plugin "tailwindcss-animate";
-
-@custom-variant dark (&:is(.dark *));
-
 
 :root {
   --radius: 0.625rem;
@@ -38,6 +37,20 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Safe area insets for mobile */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  /* Mobile bottom nav height */
+  --bottom-nav-height: 68px;
+
+  /* Cores com opacidade (para Tailwind v3) */
+  --border-50: rgba(0, 0, 0, 0.08);
+  --bg-80: rgba(255, 255, 255, 0.8);
+  --bg-90: rgba(255, 255, 255, 0.9);
 }
 
 .dark {
@@ -72,55 +85,38 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Cores com opacidade para dark mode */
+  --border-50: rgba(255, 255, 255, 0.08);
+  --bg-80: rgba(17, 18, 24, 0.8);
+  --bg-90: rgba(17, 18, 24, 0.9);
 }
-
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+  }
+  *:focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+  html {
+    overflow-x: hidden;
+    width: 100%;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Transição suave para dark mode */
+  html:not(.preload) * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   }
 
   input[type="number"]::-webkit-inner-spin-button,
@@ -131,22 +127,176 @@
 
   input[type="number"] {
     -moz-appearance: textfield;
-    appearance: textfield; /* Added for general compatibility */
+    appearance: textfield;
   }
 }
 
-
+/* ==============================
+   SCROLLBAR PERSONALIZADO
+   ============================== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--muted-foreground);
   border-radius: 5px;
 }
-
 ::-webkit-scrollbar-track {
   border-radius: 5px;
   background: var(--muted);
+}
+
+/* ==============================
+   APP SHELL — LAYOUT RESPONSIVO
+   ============================== */
+@layer components {
+  .app-shell {
+    @apply relative flex min-h-screen flex-col;
+    width: 100%;
+    overflow-x: hidden;
+    padding-bottom: var(--bottom-nav-height);
+  }
+  @screen md {
+    .app-shell {
+      padding-bottom: 0;
+    }
+  }
+
+  .app-topbar {
+    @apply sticky top-0 z-40 w-full border-b backdrop-blur-xl;
+    background-color: var(--bg-80);
+    border-color: var(--border-50);
+  }
+
+  .app-topbar-inner {
+    @apply mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3;
+  }
+  @screen sm {
+    .app-topbar-inner {
+      @apply px-6 py-3;
+    }
+  }
+  @screen lg {
+    .app-topbar-inner {
+      @apply px-8 py-4;
+    }
+  }
+
+  .app-page {
+    @apply mx-auto w-full max-w-7xl flex-1 px-4;
+  }
+  @screen sm {
+    .app-page {
+      @apply px-6;
+    }
+  }
+  @screen lg {
+    .app-page {
+      @apply px-8;
+    }
+  }
+
+  .app-surface {
+    @apply rounded-2xl border bg-card;
+    border-color: var(--border-50);
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold tracking-tight text-foreground;
+  }
+  @screen sm {
+    .section-title {
+      @apply text-3xl;
+    }
+  }
+
+  .section-copy {
+    @apply text-sm leading-6 text-muted-foreground;
+  }
+  @screen sm {
+    .section-copy {
+      @apply text-base;
+    }
+  }
+
+  .native-scroll {
+    @apply flex overflow-x-auto scroll-smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .native-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-bottom-nav {
+    @apply fixed inset-x-0 bottom-0 z-50 border-t backdrop-blur-xl;
+    padding-bottom: var(--sab);
+    background-color: var(--bg-90);
+    border-color: var(--border-50);
+  }
+  @screen md {
+    .mobile-bottom-nav {
+      @apply hidden;
+    }
+  }
+
+  .mobile-bottom-nav-inner {
+    @apply mx-auto flex w-full max-w-md items-center justify-between px-4 py-2;
+    height: var(--bottom-nav-height);
+  }
+
+  .responsive-card-grid {
+    @apply grid w-full grid-cols-1 gap-4;
+  }
+  @screen sm {
+    .responsive-card-grid {
+      @apply grid-cols-2 gap-5;
+    }
+  }
+  @screen lg {
+    .responsive-card-grid {
+      @apply grid-cols-3 gap-6;
+    }
+  }
+
+  .touch-target {
+    @apply min-h-11 min-w-11;
+  }
+  @screen md {
+    .touch-target {
+      @apply min-h-0 min-w-0;
+    }
+  }
+
+  .safe-top {
+    padding-top: var(--sat);
+  }
+  .safe-bottom {
+    padding-bottom: var(--sab);
+  }
+}
+
+/* ==============================
+   ANIMAÇÕES
+   ============================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+/* ==============================
+   MEDIA QUERIES — PRINT
+   ============================== */
+@media print {
+  .mobile-bottom-nav,
+  .app-topbar {
+    display: none !important;
+  }
+  .app-shell {
+    padding-bottom: 0 !important;
+  }
 }

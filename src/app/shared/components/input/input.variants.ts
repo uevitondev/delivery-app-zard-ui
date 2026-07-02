@@ -1,0 +1,1 @@
+export type ZardInputSizeVariants = 'default' | 'sm' | 'lg';

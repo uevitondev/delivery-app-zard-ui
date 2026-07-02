@@ -39,7 +39,7 @@ import { SelectContext } from './select-root.component';
   },
 })
 export class SelectItemComponent {
-  value = input.required<string | number>();
+  value = input.required<string | number>({ alias: 'zValue' });
   context = inject(SelectContext);
 
   isSelected = computed(() => this.context.selectedValue() === this.value());

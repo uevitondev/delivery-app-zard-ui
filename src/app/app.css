@@ -1,14 +1,16 @@
+/* Toggle de tema - fixo no canto superior direito */
 .theme-toggle {
   position: fixed;
-  top: 1rem;
+  top: calc(1rem + var(--sat, 0px));
   right: 1rem;
   z-index: 999;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
 
+/* Indicador de tema - visível apenas em desenvolvimento */
 .theme-status {
   position: fixed;
-  top: 1rem;
+  top: calc(1rem + var(--sat, 0px));
   left: 1rem;
   z-index: 999;
   background-color: rgba(255, 255, 255, 0.85);
@@ -17,11 +19,25 @@
   border-radius: 999px;
   padding: 0.35rem 0.75rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  font-size: 0.75rem;
 }
 
-@media (prefers-color-scheme: dark) {
+.dark .theme-status {
+  background-color: rgba(15, 23, 42, 0.86);
+  color: #f8fafc;
+}
+
+/* Em telas pequenas, reajusta posição para não conflitar com bottom nav */
+@media (max-width: 767px) {
+  .theme-toggle {
+    top: calc(0.5rem + var(--sat, 0px));
+    right: 0.5rem;
+  }
+  .theme-toggle > .h-5 {
+    height: 1rem;
+    width: 1rem;
+  }
   .theme-status {
-    background-color: rgba(15, 23, 42, 0.86);
-    color: #f8fafc;
+    display: none;
   }
 }

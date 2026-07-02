@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -18,38 +18,50 @@ export class ZardDarkModeService {
     if (mode === 'system') {
       return this.mediaQuery?.matches ? 'dark' : 'light';
     }
-
     return mode;
   });
 
   constructor() {
-    this.applyTheme(this.resolvedTheme(), this.mode());
+    // Aplica o tema inicial e reage a mudanças
+    effect(() => {
+      this.applyTheme(this.resolvedTheme(), this.mode());
+    });
 
+    // Escuta mudanças no tema do sistema
     this.mediaQuery?.addEventListener('change', () => {
       if (this.mode() === 'system') {
-        this.applyTheme(this.resolvedTheme(), this.mode());
+        // O effect já vai reagir automaticamente
+        this.mode.set('system');
       }
     });
   }
 
   setTheme(mode: ThemeMode) {
     this.mode.set(mode);
-    localStorage.setItem(this.storageKey, mode);
-    this.applyTheme(this.resolvedTheme(), mode);
+    try {
+      localStorage.setItem(this.storageKey, mode);
+    } catch {
+      // localStorage pode não estar disponível
+    }
   }
 
   toggleTheme() {
-    const nextMode: ThemeMode = this.mode() === 'system' ? 'light' : this.mode() === 'light' ? 'dark' : 'system';
+    const modes: ThemeMode[] = ['system', 'light', 'dark'];
+    const currentIndex = modes.indexOf(this.mode());
+    const nextMode = modes[(currentIndex + 1) % modes.length];
     this.setTheme(nextMode);
   }
 
   private getInitialMode(): ThemeMode {
-    if (typeof localStorage === 'undefined') {
-      return 'system';
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored === 'light' || stored === 'dark' || stored === 'system') {
+        return stored;
+      }
+    } catch {
+      // localStorage pode não estar disponível
     }
-
-    const stored = localStorage.getItem(this.storageKey);
-    return stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+    return 'system';
   }
 
   private applyTheme(theme: 'light' | 'dark', mode: ThemeMode) {

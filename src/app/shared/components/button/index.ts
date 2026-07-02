@@ -1,0 +1,2 @@
+export { ButtonComponent as ZardButtonComponent, getButtonClasses } from './button.component';
+export type { ButtonVariant as ZardButtonTypeVariants, ButtonSize as ZardButtonSizeVariants, ButtonShape, ButtonVariant, ButtonSize } from './button.component';

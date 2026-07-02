@@ -6,7 +6,6 @@ import {
   computed,
   input,
   model,
-  output,
   type TemplateRef,
   ViewEncapsulation,
 } from '@angular/core';
@@ -15,11 +14,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronLeft, lucideChevronRight, lucideEllipsis } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 
-import {
-  ZardButtonComponent,
-  type ZardButtonSizeVariants,
-  type ZardButtonTypeVariants,
-} from '@/shared/components/button';
+import type { ButtonVariant, ButtonSize } from '@/shared/components/button/button.component';
+import type { ZardButtonSizeVariants, ZardButtonTypeVariants } from '@/shared/components/button';
 import {
   paginationContentVariants,
   paginationEllipsisVariants,
@@ -65,22 +61,16 @@ export class ZardPaginationItemComponent {}
 
 @Component({
   selector: 'button[z-pagination-button], a[z-pagination-button]',
-  imports: [ZardButtonComponent],
   template: `
-    <z-button
-      [attr.data-active]="zActive() || null"
-      [class]="class()"
-      [zDisabled]="zDisabled()"
-      [zSize]="zSize()"
-      [zType]="zType()"
-    >
-      <ng-content />
-    </z-button>
+    <ng-content />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
     'data-slot': 'pagination-button',
+    '[attr.data-active]': 'zActive() || null',
+    '[class]': 'class()',
+    '[attr.disabled]': 'zDisabled() ? "" : null',
   },
   exportAs: 'zPaginationButton',
 })
@@ -248,7 +238,6 @@ export class ZardPaginationComponent {
 
   readonly class = input<ClassValue>('');
 
-  readonly zPageIndexChange = output<number>();
   readonly Math = Math;
 
   protected readonly classes = computed(() => mergeClasses(paginationVariants(), this.class()));
@@ -257,7 +246,6 @@ export class ZardPaginationComponent {
   goToPage(page: number): void {
     if (!this.zDisabled() && page !== this.zPageIndex()) {
       this.zPageIndex.set(page);
-      this.zPageIndexChange.emit(page);
     }
   }
 }
